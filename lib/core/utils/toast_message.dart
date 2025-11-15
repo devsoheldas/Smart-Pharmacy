@@ -1,0 +1,14 @@
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/material.dart';
+
+toastMessage(String toastMessage,Color toastBackgroundColor,Color textColor,ToastGravity toastGravity){
+  return Fluttertoast.showToast(
+      msg: toastMessage,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: toastGravity,
+      timeInSecForIosWeb: 1,
+      backgroundColor: toastBackgroundColor,
+      textColor: textColor,
+      fontSize: 16.0
+  );
+}
