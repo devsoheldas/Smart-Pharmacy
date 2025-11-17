@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           title: AppStrings.appTitle,
           debugShowCheckedModeBanner: false,
-          home: HomeScreen(),
+          // home: HomeScreen(),
+          home: PaymentSuccesfulScreen(),
         );
       },
     );

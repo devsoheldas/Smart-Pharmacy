@@ -1,4 +1,6 @@
+import 'package:e_pharma/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import '../../core/constants/app_asset_paths.dart';
 import '../../core/constants/app_colors.dart' as Colors;
 
 
@@ -25,18 +27,18 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                   child: Center(
                     child: Column(
                       children: [
-                        Image.asset("assets/images/Successful_image.png",
+                        Image.asset(AssetPaths.PaymentSucessfulImage,
                           height: 90,
                           width: 60,
                           color: Colors.AppColors.greenColor,
                         ),
                         SizedBox(height: 5,),
-                        Text("Payment Successful",style: Theme.of(context).textTheme.titleMedium,),
+                        Text(AppStrings.PaymentSuccessful,style: Theme.of(context).textTheme.titleMedium,),
                         SizedBox(height: 5,),
-                        Text("Payment Successful! Thanks for your ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        Text(AppStrings.PaymentSuccessfulMassageOne,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7),
                         ),),
-                        Text("order - it's now confirmed.",
+                        Text(AppStrings.PaymentSuccessfulMassageTwo,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7),
                           ),
@@ -46,7 +48,7 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                   ),
                 ),
                 SizedBox(height: 25,),
-                Text("Payment Details", style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                Text(AppStrings.PaymentDetails, style: Theme.of(context).textTheme.bodySmall!.copyWith(
                  fontWeight: FontWeight.w600,
                 ),),
                 SizedBox(height: 5,),
@@ -65,10 +67,10 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(" Transaction ID ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text( AppStrings.PaymentDetailsTransactionID,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.5),
                             ),),
-                            Text(" 4051 3543 1002 ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.TransactionID,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.w500,
                             ),)
                           ],
@@ -77,10 +79,10 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(" Date ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.PaymentDetailsTransactionDate,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.5),
                             ),),
-                            Text(" 1 April 2025 ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.TransactionDate,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.w500,
                             ),)
                           ],
@@ -89,10 +91,10 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(" Type of Transaction ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.PaymentDetailsTransactionTypeofTransaction,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.5),
                             ),),
-                            Text(" Master Card ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.TypeofTransaction,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.w500,
                             ),)
                           ],
@@ -101,10 +103,10 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(" Total ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.PaymentDetailsTransactionTotal,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.5),
                             ),),
-                            Text(" \$27.59 ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.TransactionTotal,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.w500,
                             ),)
                           ],
@@ -113,10 +115,10 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("  Status ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.PaymentDetailsTransactionStatus,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.5),
                             ),),
-                            Text(" Success ",style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            Text(AppStrings.TransactionStatus,style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.w500,
                               color: Colors.AppColors.greenColor
                             ),)
@@ -137,7 +139,7 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                         borderRadius: BorderRadius.circular(7),
                       )
                     ),
-                      onPressed: (){}, child: Text("Track Your Order")),
+                      onPressed: (){}, child: Text(AppStrings.TrackYourButton)),
                 ),
                 SizedBox(height: 25,),
                 SizedBox(
@@ -150,7 +152,7 @@ class _PaymentSuccesfulScreenState extends State<PaymentSuccesfulScreen> {
                           borderRadius: BorderRadius.circular(5),
                         )
                       ),
-                      onPressed: (){}, child: Text("Back to Home")),
+                      onPressed: (){}, child: Text(AppStrings.BacktoHomeButton)),
                 ),
               ],
             ),

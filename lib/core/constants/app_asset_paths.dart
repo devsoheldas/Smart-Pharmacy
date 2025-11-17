@@ -30,6 +30,8 @@ class AssetPaths {
   static const logo_horizontal = '$images/logo_horizontal.png';
   static const logoSquare = '$images/logo_square.png';
   static const contactUs = '$images/contact_us.png';
+  static const SimeCard = '$images/Sim Card.png';
+  static const PaymentSucessfulImage = '$images/Successful_image.png';
 
 
 // Add more assets
