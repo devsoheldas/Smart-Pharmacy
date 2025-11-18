@@ -1,6 +1,7 @@
 import 'package:e_pharma/feature/auth/singup_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../../core/widgets/social_login_button.dart';
 import 'forget_password_verify_email_screen.dart';
 
@@ -11,11 +12,18 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   bool _obscureText = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  late final AnimationController _controller;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +46,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
+                        Center(child: Lottie.asset(
+                          'assets/lottie/login.json',
+                          controller: _controller,
+                          onLoaded: (composition) {
+                            _controller
+                              ..duration = composition.duration
+                              ..forward();
+                          },
+                          repeat: false,
+                          height: 250,
+                          width: 250,
+                        ),),
                         const Spacer(),
                         // Card
                         Container(
