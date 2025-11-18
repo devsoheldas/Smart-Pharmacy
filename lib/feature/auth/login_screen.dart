@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xff333333),
+                                    color: Colors.black,
                                   ),
                                 ),
                                 const SizedBox(height: 25),
