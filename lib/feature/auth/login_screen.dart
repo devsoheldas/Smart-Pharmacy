@@ -1,7 +1,9 @@
+import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/feature/auth/singup_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../../core/constants/app_asset_paths.dart';
 import '../../core/widgets/social_login_button.dart';
 import 'forget_password_verify_email_screen.dart';
 
@@ -31,11 +33,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
-          ),
+          gradient:
+          AppColors.appBGGradientColor
         ),
         child: SafeArea(
           child: LayoutBuilder(
@@ -110,12 +109,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                         child: TextFormField(
                                           controller: _emailController,
                                           keyboardType:
-                                              TextInputType.emailAddress,
+                                          TextInputType.emailAddress,
                                           validator: (String? value) {
                                             String inputText = value ?? "";
                                             if (EmailValidator.validate(
-                                                  inputText,
-                                                ) ==
+                                              inputText,
+                                            ) ==
                                                 false) {
                                               return "Enter your valid email";
                                             }
@@ -129,10 +128,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                             hintText: "Email Address",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
+                                            EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -179,10 +178,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                             hintText: "Password",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -271,17 +270,17 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   children: [
                                     SocialLoginButton(
                                       onTap: () {},
-                                      image: "google.png",
+                                      image: AssetPaths.google,
                                     ),
                                     const SizedBox(width: 18),
                                     SocialLoginButton(
                                       onTap: () {},
-                                      image: "facebook.png",
+                                      image: AssetPaths.facebook,
                                     ),
                                     const SizedBox(width: 18),
                                     SocialLoginButton(
                                       onTap: () {},
-                                      image: "apple.png",
+                                      image: AssetPaths.apple,
                                     ),
                                   ],
                                 ),

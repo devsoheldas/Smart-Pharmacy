@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_colors.dart';
 import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -66,12 +67,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 26),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
-
-          ),
+          gradient:
+          AppColors.appBGGradientColor
         ),
         child: SafeArea(
           child: SingleChildScrollView(

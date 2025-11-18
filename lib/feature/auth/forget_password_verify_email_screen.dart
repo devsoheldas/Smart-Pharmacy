@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_colors.dart';
 import 'forget_password_verify_otp_screen.dart';
 
 class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
@@ -54,11 +55,8 @@ class _ForgetPasswordVerifyEmailScreenState
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 26),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
-          ),
+          gradient:
+          AppColors.appBGGradientColor
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -146,6 +144,7 @@ class _ForgetPasswordVerifyEmailScreenState
                 // Email
                 Container(
                   padding: EdgeInsets.all(28),
+
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),

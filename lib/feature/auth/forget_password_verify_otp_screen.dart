@@ -2,6 +2,8 @@ import 'package:e_pharma/feature/auth/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../core/constants/app_colors.dart';
+
 class ForgotPasswordVerifyOTPScreen extends StatefulWidget {
   const ForgotPasswordVerifyOTPScreen({super.key, required this.email});
 
@@ -56,12 +58,8 @@ class _ForgotPasswordVerifyOTPScreenState
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 26),
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
-            stops: [0.0, 0.5, 1.0],
-          ),
+          gradient:
+          AppColors.appBGGradientColor
         ),
         child: SafeArea(
           child: LayoutBuilder(

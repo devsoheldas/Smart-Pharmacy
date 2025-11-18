@@ -59,5 +59,13 @@ class AppColors {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
+  static const LinearGradient appBGGradientColor = LinearGradient(
+    begin: Alignment(-0.8, -1),
+    end: Alignment(1, 0.8),
+    colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
+
+
+  );
+
 
 }

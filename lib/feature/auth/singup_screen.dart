@@ -1,5 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import '../../core/constants/app_asset_paths.dart';
+import '../../core/constants/app_colors.dart';
 import '../../core/widgets/social_login_button.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -21,14 +23,10 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
-          ),
+          gradient:
+          AppColors.appBGGradientColor
         ),
         child: SafeArea(
           child: LayoutBuilder(
@@ -289,17 +287,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                   children: [
                                     SocialLoginButton(
                                       onTap: () {},
-                                      image: "google.png",
+                                      image: AssetPaths.google,
                                     ),
                                     const SizedBox(width: 18),
                                     SocialLoginButton(
                                       onTap: () {},
-                                      image: "facebook.png",
+                                      image: AssetPaths.facebook,
                                     ),
                                     const SizedBox(width: 18),
                                     SocialLoginButton(
                                       onTap: () {},
-                                      image: "apple.png",
+                                      image: AssetPaths.apple,
                                     ),
                                   ],
                                 ),

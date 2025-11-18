@@ -27,6 +27,11 @@ class AssetPaths {
   static const noNetworkImage = "$icons/no-net-image.png";
   static const noImage = '$images/no_image.png';
   static const contactUs = '$images/contact_us.png';
+  static const google = '$icons/google.png';
+  static const facebook = '$icons/facebook.png';
+  static const apple = '$icons/apple.png';
+
+
 
 
 // Add more assets

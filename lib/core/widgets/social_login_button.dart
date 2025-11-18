@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../constants/app_asset_paths.dart';
 class SocialLoginButton extends StatelessWidget {
   final String image;
   final VoidCallback onTap;
@@ -20,13 +22,14 @@ class SocialLoginButton extends StatelessWidget {
           color: Colors.white,
           shape: BoxShape.circle,
         ),
-        child: Center(child: Image(
-          image: AssetImage("assets/icons/$image"),
-          width: 20,
-          height: 20,
-
-        )),
+        child:
+        Center(
+          child: Image.asset(
+            image,
+            width: 20,
+            height: 20,
+          ),
       ),
-    );
+    ));
   }
 }
