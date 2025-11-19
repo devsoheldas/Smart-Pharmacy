@@ -46,6 +46,9 @@ class AppColors {
   static const Color successColor = Color(0xFFFDEFEE);
   static const Color errorColor = Color(0xFFEF5A57);
   static const Color ctaLight = Color(0xFFFFF7E7);
+  static const Color LightOrange = Color(0xFFECCCA2);
+  static const Color Orange = Color(0xFFD85F06);
+  static const Color CardColor = Color(0xFFEAE6E4);
 
 
   static const Color selectedBackground = Color(0xFF1D1E20);
@@ -58,6 +61,23 @@ class AppColors {
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
+  );
+  static const LinearGradient appBGGradientColor = LinearGradient(
+    begin: Alignment(-0.8, -1),
+    end: Alignment(1, 0.8),
+    colors: [Color(0xff8E8CFF), Color(0xff6C63FF), Color(0xff4A47D1)],
+
+
+  );
+
+  static const LinearGradient CheckoutScreenContainerColor = LinearGradient(
+    colors: [
+      Color(0xFFF3BF42),
+      Color(0xFFF1A20E),
+      Color(0xFFF3D7B4),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.center,
   );
 
 }
