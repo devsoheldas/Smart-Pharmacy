@@ -1,5 +1,6 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/feature/auth/singup_screen.dart';
+import 'package:e_pharma/feature/home/home_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -216,15 +217,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   height: 55,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Logging in..."),
-                                          ),
-                                        );
-                                      }
+                                      // if (_formKey.currentState!.validate()) {
+                                      //   ScaffoldMessenger.of(
+                                      //     context,
+                                      //   ).showSnackBar(
+                                      //     const SnackBar(
+                                      //       content: Text("Logging in..."),
+                                      //     ),
+                                      //   );
+                                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
+                                      //
+                                      // }
+
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
+
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xff6C63FF),
