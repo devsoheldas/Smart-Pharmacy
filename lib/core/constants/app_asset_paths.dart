@@ -26,9 +26,6 @@ class AssetPaths {
   static const closeCircle = "$icons/close_circle.svg";
   static const noNetworkImage = "$icons/no-net-image.png";
   static const noImage = '$images/no_image.png';
-  static const logo = '$images/logo.png';
-  static const logo_horizontal = '$images/logo_horizontal.png';
-  static const logoSquare = '$images/logo_square.png';
   static const contactUs = '$images/contact_us.png';
 
 
