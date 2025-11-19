@@ -25,7 +25,7 @@ class AppColors {
   static const Color greyDark = Color(0xFF575757);
   static const Color greyMedium = Color(0xFF676767);
   static const Color transparent = Color(0x00000000);
-  static const Color redColor = Colors.red;
+  static const Color redColor = Color(0xFFEF5A57);
   static const Color selectedTabColor = Color(0xFFFFF3EB);
   static const Color cherryColor = Color(0xFFEF5A57);
   static const Color greenColor = Color(0xFF06A366);
