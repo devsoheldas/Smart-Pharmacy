@@ -1,11 +1,12 @@
+import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // TODO: Import login screen
 // import 'package:api_integration/screens/login_screen.dart';
 
-void main (){
-  runApp(const RegisterScreen());
-}
+// void main (){
+//   runApp(const RegisterScreen());
+// }
 
 
 class RegisterScreen extends StatefulWidget {
@@ -87,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Please accept terms and conditions'),
-          backgroundColor: Colors.red[700],
+          backgroundColor: AppColors.redColor,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -115,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           SnackBar(
             content: const Row(
               children: [
-                Icon(Icons.check_circle, color: Colors.white),
+                Icon(Icons.check_circle, color: AppColors.whiteColor),
                 SizedBox(width: 12),
                 Text('Registration successful!'),
               ],
