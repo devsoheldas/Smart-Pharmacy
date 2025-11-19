@@ -91,7 +91,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen>
       context: context,
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(20),
         ),
         title: Text(
           "Cancel Order?",
@@ -286,7 +286,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen>
                           : isPending
                           ? AppColors.amberColor
                           : AppColors.greenColor,
-                      fontSize: 12.sp,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
