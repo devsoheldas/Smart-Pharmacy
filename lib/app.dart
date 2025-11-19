@@ -1,3 +1,5 @@
+import 'package:e_pharma/feature/checkout/checkout_screen.dart';
+import 'package:e_pharma/feature/checkout/payment_succesful_screen.dart';
 import 'package:e_pharma/feature/home/home_screen.dart';
 import 'package:e_pharma/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +22,7 @@ class MyApp extends StatelessWidget {
           darkTheme: appLightTheme,
           themeMode: ThemeMode.system,
           title: AppStrings.appTitle,
-
           debugShowCheckedModeBanner: false,
-
           home: SplashScreen(),
         );
       },

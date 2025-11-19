@@ -30,8 +30,8 @@ class AssetPaths {
   static const google = '$icons/google.png';
   static const facebook = '$icons/facebook.png';
   static const apple = '$icons/apple.png';
-
-
+  static const SimeCard = '$images/Sim Card.png';
+  static const PaymentSucessfulImage = '$images/Successful_image.png';
 
 
 // Add more assets
