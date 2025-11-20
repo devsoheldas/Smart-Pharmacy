@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import '../../core/models/cart_model.dart';
-import '../../core/models/product_models.dart';
-import '../../core/services/shared_preferences_service.dart';
+import '../../../core/models/cart_model.dart';
+import '../../../core/models/product_models.dart';
+import '../../../core/services/shared_preferences_service.dart';
 
 
 class ViewProductDetails extends StatefulWidget {

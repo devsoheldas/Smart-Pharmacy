@@ -1,11 +1,11 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
-import 'package:e_pharma/feature/auth/singup_screen.dart';
-import 'package:e_pharma/feature/home/home_screen.dart';
+import 'package:e_pharma/feature/auth/ui/singup_screen.dart';
+import 'package:e_pharma/feature/product/ui/home_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../../core/constants/app_asset_paths.dart';
-import '../../core/widgets/social_login_button.dart';
+import '../../../core/constants/app_asset_paths.dart';
+import '../widgets/social_login_button.dart';
 import 'forget_password_verify_email_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xff6C63FF),
+                                      backgroundColor: const Color(0xff9775FA),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
                                       ),

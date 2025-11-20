@@ -1,8 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import '../../core/constants/app_asset_paths.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/widgets/social_login_button.dart';
+import '../../../core/constants/app_asset_paths.dart';
+import '../../../core/constants/app_colors.dart';
+import '../widgets/social_login_button.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -232,8 +232,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
-                                        // All validations passed
-                                        // Call signup API or function here
+
+
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
@@ -244,7 +244,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xff6C63FF),
+                                      backgroundColor: const Color(0xff9775FA),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
                                       ),
