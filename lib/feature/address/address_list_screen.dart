@@ -71,7 +71,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit, color: AppColors.blueColor),
+                          icon: Icon(Icons.edit, color: Colors.blue,),
                           onPressed: () async {
                             final updated = await Navigator.push(
                               context,
