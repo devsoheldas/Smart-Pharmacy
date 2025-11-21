@@ -1,8 +1,9 @@
-import 'package:e_pharma/feature/home/home_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/constants/app_strings.dart';
 import 'core/theme/app_theme.dart';
+import 'feature/address/address_list_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           title: AppStrings.appTitle,
           debugShowCheckedModeBanner: false,
-          home: HomeScreen(),
+          home: AddressListScreen(),
         );
       },
     );
