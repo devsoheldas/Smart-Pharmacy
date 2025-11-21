@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 
 class NavigationService {
-  static final NavigationService _instance = NavigationService._internal();
-  factory NavigationService() => _instance;
-  NavigationService._internal();
+  // Static navigator key
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  // Getter for navigator
+  static NavigatorState? get navigator => navigatorKey.currentState;
 
-  NavigatorState? get navigator => navigatorKey.currentState;
-
-  Future<dynamic> pushNamed(String routeName, {Object? arguments}) {
+  // Push a new screen by route name
+  static Future<dynamic> pushNamed(String routeName, {Object? arguments}) {
     return navigator!.pushNamed(routeName, arguments: arguments);
   }
 
-  Future<dynamic> pushReplacementNamed(String routeName, {Object? arguments}) {
+  // Replace current screen with a new one
+  static Future<dynamic> pushReplacementNamed(String routeName, {Object? arguments}) {
     return navigator!.pushReplacementNamed(routeName, arguments: arguments);
   }
 
-  Future<dynamic> pushNamedAndRemoveUntil(String routeName, {Object? arguments}) {
+  // Push a new screen and remove all previous screens
+  static Future<dynamic> pushNamedAndRemoveUntil(String routeName, {Object? arguments}) {
     return navigator!.pushNamedAndRemoveUntil(routeName, (route) => false, arguments: arguments);
   }
 
-  void pop<T>([T? result]) {
+  // Pop the current screen
+  static void pop<T>([T? result]) {
     navigator!.pop(result);
   }
 }

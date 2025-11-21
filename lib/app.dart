@@ -1,7 +1,9 @@
-import 'package:e_pharma/feature/home/home_screen.dart';
+import 'package:e_pharma/feature/splash/splash_screen.dart';
+import 'package:e_pharma/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/constants/app_strings.dart';
+import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
 
 class MyApp extends StatelessWidget {
@@ -19,8 +21,10 @@ class MyApp extends StatelessWidget {
           darkTheme: appLightTheme,
           themeMode: ThemeMode.system,
           title: AppStrings.appTitle,
+          navigatorKey: NavigationService.navigatorKey,
+          routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
-          home: HomeScreen(),
+          home: SplashScreen(),
         );
       },
     );
