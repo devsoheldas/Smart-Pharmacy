@@ -47,12 +47,23 @@ class _SideMenuTileState extends State<SideMenuTile> {
           },
         ),
         _buildMenuTile(
-          icon: Icons.shopping_bag_rounded,
-          title: 'Orders',
+          icon: Icons.location_on_rounded,
+          title: 'Address',
           index: 2,
+
           onTap: () {
             setState(() {
               _selectedIndex = 2;
+            });
+          },
+        ),
+        _buildMenuTile(
+          icon: Icons.shopping_bag_rounded,
+          title: 'Orders',
+          index: 3,
+          onTap: () {
+            setState(() {
+              _selectedIndex = 3;
             });
             Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderHistoryScreen()));
           },
@@ -60,23 +71,23 @@ class _SideMenuTileState extends State<SideMenuTile> {
         _buildMenuTile(
           icon: Icons.favorite_rounded,
           title: 'Wishlist',
-          index: 3,
+          index: 4,
           badgeCount: 3,
           onTap: () {
             setState(() {
-              _selectedIndex = 3;
+              _selectedIndex = 4;
             });
           },
         ),
         _buildMenuTile(
           icon: Icons.shopping_cart_rounded,
           title: 'Cart',
-          index: 4,
+          index: 5,
           badgeCount: _cartItemCount,
 
           onTap: () {
             setState(() {
-              _selectedIndex = 4;
+              _selectedIndex = 5;
             });
             Navigator.push(
               context,
