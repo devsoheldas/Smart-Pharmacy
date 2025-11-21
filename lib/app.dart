@@ -6,6 +6,7 @@ import 'core/constants/app_strings.dart';
 import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
 import 'feature/order/order_confirmed_screen.dart';
+import 'feature/order/order_confirmed_successful_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
           routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
           // home: SplashScreen(),
-          home: OrderConfirmedScreen(),
+          home: OrderConfirmedSuccessfulScreen(),
         );
       },
     );
