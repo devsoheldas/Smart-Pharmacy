@@ -1,5 +1,6 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/core/services/navigation_service.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:e_pharma/routes/app_routes.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   bool _obscureText = true;
-  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late final AnimationController _controller;
@@ -27,6 +28,23 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     super.initState();
     _controller = AnimationController(vsync: this);
   }
+
+  Future<void> logInUser(String phone, String password)async{
+    ApiService apiService = ApiService();
+
+    final result = await apiService.logInUser(phone, password);
+
+    if(result.success == true){
+      NavigationService.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result.message),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,25 +126,25 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                           ),
                                         ),
                                         child: TextFormField(
-                                          controller: _emailController,
+                                          controller: _phoneController,
                                           keyboardType:
-                                          TextInputType.emailAddress,
-                                          validator: (String? value) {
-                                            String inputText = value ?? "";
-                                            if (EmailValidator.validate(
-                                              inputText,
-                                            ) ==
-                                                false) {
-                                              return "Enter your valid email";
-                                            }
-                                            return null;
-                                          },
+                                          TextInputType.phone,
+                                          // validator: (String? value) {
+                                          //   String inputText = value ?? "";
+                                          //   if (EmailValidator.validate(
+                                          //     inputText,
+                                          //   ) ==
+                                          //       false) {
+                                          //     return "Enter your valid email";
+                                          //   }
+                                          //   return null;
+                                          // },
                                           decoration: const InputDecoration(
                                             prefixIcon: Icon(
                                               Icons.email_outlined,
                                               color: Color(0xff6A63FF),
                                             ),
-                                            hintText: "Email Address",
+                                            hintText: "Phone Number",
                                             border: InputBorder.none,
                                             contentPadding:
                                             EdgeInsets.symmetric(
@@ -217,20 +235,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   height: 55,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      // if (_formKey.currentState!.validate()) {
-                                      //   ScaffoldMessenger.of(
-                                      //     context,
-                                      //   ).showSnackBar(
-                                      //     const SnackBar(
-                                      //       content: Text("Logging in..."),
-                                      //     ),
-                                      //   );
-                                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
-                                      //
-                                      // }
+                                      if (_formKey.currentState!.validate()) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Logging in..."),
+                                          ),
+                                        );
 
-                                      NavigationService.pushNamed(AppRoutes.homeScreen);
+                                        logInUser(_phoneController.text, _passwordController.text);
 
+                                      }
+                                      // NavigationService.pushNamed(AppRoutes.homeScreen);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xff9775FA),
@@ -327,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
