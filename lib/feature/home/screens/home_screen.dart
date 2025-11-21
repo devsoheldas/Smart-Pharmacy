@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-
 import '../../../core/models/product_models.dart';
 import '../../../core/services/api_caller.dart';
+import '../../../core/services/navigation_service.dart';
+import '../../../routes/app_routes.dart';
 import '../widgets/drawer_section_header.dart';
 import '../widgets/info_card.dart';
-import '../widgets/product_card.dart';
+import '../../product/widgets/product_card.dart';
+import '../../product/screens/view_product_details.dart';
 import '../widgets/side_menu_tile.dart';
-import 'view_product_details.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ProductService _productService = ProductService();
+  final ProductService _productService = ProductService();
   Products? _products;
   bool _productInProgress = true;
   String _errorMessage = '';
@@ -153,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // Notification Button
             GestureDetector(
               onTap: () {
-
+                NavigationService.pushNamed(AppRoutes.profileScreen);
               },
               child: Container(
                 width: 50,

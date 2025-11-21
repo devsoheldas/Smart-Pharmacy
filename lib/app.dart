@@ -1,4 +1,5 @@
 import 'package:e_pharma/feature/splash/splash_screen.dart';
+import 'package:e_pharma/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/constants/app_strings.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           title: AppStrings.appTitle,
           navigatorKey: NavigationService.navigatorKey,
+          routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
           home: SplashScreen(),
         );

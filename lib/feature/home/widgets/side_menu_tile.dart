@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../core/services/navigation_service.dart';
+import '../../../routes/app_routes.dart';
 import '../../order/order_history_screen.dart';
 import '../../../core/services/shared_preferences_service.dart';
-import '../screens/cart_screen.dart';
+import '../../cart/cart_screen.dart';
 
 
 
@@ -43,6 +45,7 @@ class _SideMenuTileState extends State<SideMenuTile> {
             setState(() {
               _selectedIndex = 1;
             });
+            NavigationService.pushNamed(AppRoutes.profileScreen);
           },
         ),
         _buildMenuTile(
@@ -53,7 +56,7 @@ class _SideMenuTileState extends State<SideMenuTile> {
             setState(() {
               _selectedIndex = 2;
             });
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderHistoryScreen()));
+            NavigationService.pushNamed(AppRoutes.orderHistoryScreen);
           },
         ),
         _buildMenuTile(

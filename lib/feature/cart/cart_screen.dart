@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/models/cart_model.dart';
-import '../../../core/services/navigation_service.dart';
-import '../../../core/services/shared_preferences_service.dart';
-import '../../../routes/app_routes.dart';
-import 'home_screen.dart';
+import '../../core/models/cart_model.dart';
+import '../../core/services/navigation_service.dart';
+import '../../core/services/shared_preferences_service.dart';
+import '../../routes/app_routes.dart';
+import '../home/screens/home_screen.dart';
 
 
 class CartScreen extends StatefulWidget {
