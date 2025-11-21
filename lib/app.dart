@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/constants/app_strings.dart';
 import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
+import 'feature/order/order_confirmed_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
           navigatorKey: NavigationService.navigatorKey,
           routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
-          home: SplashScreen(),
+          // home: SplashScreen(),
+          home: OrderConfirmedScreen(),
         );
       },
     );

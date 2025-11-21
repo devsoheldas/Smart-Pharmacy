@@ -32,6 +32,11 @@ class AssetPaths {
   static const apple = '$icons/apple.png';
   static const SimeCard = '$images/Sim Card.png';
   static const PaymentSucessfulImage = '$images/Successful_image.png';
+  static const Bikash_icon = '$images/bikas_icon.png';
+  static const Dutch_Bangla_roket = '$images/dutch_bangla_roket.webp';
+  static const OrderFeild_Icon = '$images/faield_ison.png';
+  static const Nogod_Icon = '$images/nogod_icon.png';
+  static const Order_Confirmed = '$images/order_confimed.png';
 
 
 // Add more assets

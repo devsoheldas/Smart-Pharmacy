@@ -30,5 +30,15 @@ class AppStrings {
   static const TransactionStatus =  "Success " ;
   static const TrackYourButton =  "Track Your Order " ;
   static const BacktoHomeButton =  "Back to Home " ;
+  static const TotalOrder =  "Total Order " ;
+  static const TotalOrderValue=  " \$ 270.50" ;
+  static const PersonalInformation =  " Personal Information " ;
+  static const DeliveryType =  " Delivery Type " ;
+  static const DeliveryTypeExpress =  " Express " ;
+  static const DeliveryTypeNormal =  " Normal " ;
+  static const DeliveryMethod =  " Delivery Method " ;
+  static const CashOnDelivery =  " Cash On Delivery " ;
+  static const DigitalPayment =  " Digital Payment " ;
+  static const ConfirmedOrder =  " Confirmed Order " ;
 // Add more strings
 }
