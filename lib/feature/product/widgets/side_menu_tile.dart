@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../feature/product/cart_screen.dart';
-import '../services/shared_preferences_service.dart';
+import '../../order/order_history_screen.dart';
+import '../ui/cart_screen.dart';
+import '../../../core/services/shared_preferences_service.dart';
 
 
 
@@ -36,8 +37,8 @@ class _SideMenuTileState extends State<SideMenuTile> {
     return Column(
       children: [
         _buildMenuTile(
-          icon: Icons.shopping_bag_rounded,
-          title: 'Products',
+          icon: Icons.person_2_rounded,
+          title: 'Profile',
           index: 1,
           onTap: () {
             setState(() {
@@ -46,13 +47,14 @@ class _SideMenuTileState extends State<SideMenuTile> {
           },
         ),
         _buildMenuTile(
-          icon: Icons.category_rounded,
-          title: 'Categories',
+          icon: Icons.shopping_bag_rounded,
+          title: 'Orders',
           index: 2,
           onTap: () {
             setState(() {
               _selectedIndex = 2;
             });
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderHistoryScreen()));
           },
         ),
         _buildMenuTile(

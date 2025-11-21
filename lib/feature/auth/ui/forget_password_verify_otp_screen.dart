@@ -1,8 +1,8 @@
-import 'package:e_pharma/feature/auth/reset_password_screen.dart';
+import 'package:e_pharma/feature/auth/ui/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../../core/constants/app_colors.dart';
 
 class ForgotPasswordVerifyOTPScreen extends StatefulWidget {
   const ForgotPasswordVerifyOTPScreen({super.key, required this.email});
@@ -234,7 +234,7 @@ class _ForgotPasswordVerifyOTPScreenState
                                   child: ElevatedButton(
                                     onPressed: _onVerifyPressed,
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xff6C63FF),
+                                      backgroundColor: const Color(0xff9775FA),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
                                       ),

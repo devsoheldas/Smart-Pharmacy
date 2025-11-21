@@ -2,7 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../../core/constants/app_colors.dart';
 import 'forget_password_verify_otp_screen.dart';
 
 class ForgetPasswordVerifyEmailScreen extends StatefulWidget {
@@ -244,7 +244,7 @@ class _ForgetPasswordVerifyEmailScreenState
                         child: ElevatedButton(
                           onPressed: _onTapNextButton,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xff6C63FF),
+                            backgroundColor: Color(0xff9775FA),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),

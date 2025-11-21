@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../../core/constants/app_colors.dart';
 import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -324,7 +324,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             child: ElevatedButton(
                               onPressed: _onResetPasswordPressed,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff6C63FF),
+                                backgroundColor: Color(0xff9775FA),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
