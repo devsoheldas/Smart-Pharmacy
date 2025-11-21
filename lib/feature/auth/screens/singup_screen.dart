@@ -1,5 +1,6 @@
 import 'package:e_pharma/core/services/navigation_service.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
+import 'package:e_pharma/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_asset_paths.dart';
 import '../../../core/constants/app_colors.dart';
@@ -15,20 +16,91 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+  bool _isLoading = false;
 
-  final _emailController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  //API call
+  Future<void> singUpUser(
+      String phone,
+      String password,
+      String name,
+      String confirmationPassword,
+      ) async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Signing up..."),
+        duration: Duration(seconds: 30),
+      ),
+    );
+
+    try {
+      ApiService apiService = ApiService();
+      final result = await apiService.singUpUser(
+        phone,
+        password,
+        name,
+        confirmationPassword,
+      );
+
+
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (result.success == true) {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message ?? "Registration successful!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Navigate to login screen after a short delay
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          NavigationService.pushNamedAndRemoveUntil(AppRoutes.loginScreen);
+        });
+      } else {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message ?? "Registration failed!"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: ${e.toString()}"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient:
-          AppColors.appBGGradientColor
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.appBGGradientColor),
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -39,6 +111,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Column(
                       children: [
                         const Spacer(),
+
                         // Card
                         Container(
                           width: double.infinity,
@@ -63,7 +136,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                     color: Color(0xff333333),
                                   ),
                                 ),
+
                                 const SizedBox(height: 25),
+
+                                // Card Box
                                 Container(
                                   padding: const EdgeInsets.all(20),
                                   decoration: BoxDecoration(
@@ -79,7 +155,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   child: Column(
                                     children: [
-                                      // Email
+                                      // Name
                                       Container(
                                         decoration: BoxDecoration(
                                           color: const Color(0xffF1F1F7),
@@ -88,38 +164,71 @@ class _SignupScreenState extends State<SignupScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          cursorColor: Colors.blue,
-                                          cursorWidth: 1,
-                                          showCursor: true,
-                                          controller: _emailController,
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                          validator: (String? value) {
-                                            String inputText = value ?? "";
-                                            if (EmailValidator.validate(
-                                                  inputText,
-                                                ) ==
-                                                false) {
-                                              return "Enter your valid email";
+                                          controller: _nameController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Enter your name";
                                             }
                                             return null;
                                           },
                                           decoration: const InputDecoration(
                                             prefixIcon: Icon(
-                                              Icons.email_outlined,
+                                              Icons.person_outline,
                                               color: Color(0xff6A63FF),
                                             ),
-                                            hintText: "Email Address",
+                                            hintText: "Full Name",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
+                                            EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
+
                                       const SizedBox(height: 12),
+
+                                      // Phone Number
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffF1F1F7),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _phoneController,
+                                          keyboardType: TextInputType.phone,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Enter your phone number";
+                                            }
+                                            if (value.length < 11) {
+                                              return "Enter a valid phone number";
+                                            }
+                                            return null;
+                                          },
+                                          decoration: const InputDecoration(
+                                            prefixIcon: Icon(
+                                              Icons.phone_outlined,
+                                              color: Color(0xff6A63FF),
+                                            ),
+                                            hintText: "Phone Number",
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                            EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 12),
+
                                       // Password
                                       Container(
                                         decoration: BoxDecoration(
@@ -134,10 +243,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
-                                              return "Please enter a password";
+                                              return "Enter a password";
                                             }
                                             if (value.length < 6) {
-                                              return "Password must be at least 6 characters";
+                                              return "Must be at least 6 characters";
                                             }
                                             return null;
                                           },
@@ -156,21 +265,23 @@ class _SignupScreenState extends State<SignupScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   _obscurePassword =
-                                                      !_obscurePassword;
+                                                  !_obscurePassword;
                                                 });
                                               },
                                             ),
                                             hintText: "Password",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
+
                                       const SizedBox(height: 12),
+
                                       // Confirm Password
                                       Container(
                                         decoration: BoxDecoration(
@@ -185,7 +296,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
-                                              return "Please confirm your password";
+                                              return "Confirm your password";
                                             }
                                             if (value !=
                                                 _passwordController.text) {
@@ -208,39 +319,41 @@ class _SignupScreenState extends State<SignupScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   _obscureConfirm =
-                                                      !_obscureConfirm;
+                                                  !_obscureConfirm;
                                                 });
                                               },
                                             ),
                                             hintText: "Confirm Password",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
+
                                 const SizedBox(height: 20),
+
                                 // Signup Button
                                 SizedBox(
                                   width: double.infinity,
                                   height: 55,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-
-
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Signing up..."),
-                                          ),
+                                    onPressed: _isLoading
+                                        ? null
+                                        : () async {
+                                      if (_formKey.currentState!
+                                          .validate()) {
+                                        await singUpUser(
+                                          _phoneController.text.trim(),
+                                          _passwordController.text.trim(),
+                                          _nameController.text.trim(),
+                                          _confirmController.text.trim(),
                                         );
                                       }
                                     },
@@ -251,7 +364,18 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ),
                                       elevation: 6,
                                     ),
-                                    child: const Text(
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                        AlwaysStoppedAnimation<Color>(
+                                            Colors.white),
+                                      ),
+                                    )
+                                        : const Text(
                                       "SIGN UP",
                                       style: TextStyle(
                                         color: Colors.white,
@@ -261,8 +385,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ),
                                 ),
+
                                 const SizedBox(height: 25),
-                                //OR
+
+                                // OR Line
                                 Row(
                                   children: [
                                     Expanded(
@@ -282,7 +408,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ],
                                 ),
+
                                 const SizedBox(height: 20),
+
+                                // Social login buttons
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -302,15 +431,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                                   ],
                                 ),
+
                                 const SizedBox(height: 25),
+
+                                // Already have account
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Text("Already have an account? "),
                                     GestureDetector(
-                                      onTap: () {
-                                        NavigationService.pop();
-                                      },
+                                      onTap: () => NavigationService.pop(),
                                       child: const Text(
                                         "Login",
                                         style: TextStyle(
@@ -339,7 +469,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();

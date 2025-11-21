@@ -2,7 +2,6 @@ import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/core/services/navigation_service.dart';
 import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:e_pharma/routes/app_routes.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../../../core/constants/app_asset_paths.dart';
@@ -16,45 +15,97 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   bool _obscureText = true;
+  bool _isLoading = false;
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late final AnimationController _controller;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = AnimationController(vsync: this);
   }
 
-  Future<void> logInUser(String phone, String password)async{
-    ApiService apiService = ApiService();
-
-    final result = await apiService.logInUser(phone, password);
-
-    if(result.success == true){
-      NavigationService.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(result.message),
-      ),
-    );
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
+  //API call
+  Future<void> logInUser(String phone, String password) async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Logging in..."),
+        duration: Duration(seconds: 30),
+      ),
+    );
+
+    try {
+      ApiService apiService = ApiService();
+      final result = await apiService.logInUser(phone, password);
+
+      // Hide the loading snackbar
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (result.success == true) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message ?? "Login successful!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Navigate to home screen after a short delay
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          NavigationService.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
+        });
+      } else {
+        // Show error message from API
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message ?? "Login failed!"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Hide the loading snackbar
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: ${e.toString()}"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient:
-          AppColors.appBGGradientColor
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.appBGGradientColor),
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -64,18 +115,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        Center(child: Lottie.asset(
-                          'assets/lottie/login.json',
-                          controller: _controller,
-                          onLoaded: (composition) {
-                            _controller
-                              ..duration = composition.duration
-                              ..forward();
-                          },
-                          repeat: false,
-                          height: 250,
-                          width: 250,
-                        ),),
+                        Center(
+                          child: Lottie.asset(
+                            'assets/lottie/login.json',
+                            controller: _controller,
+                            onLoaded: (composition) {
+                              _controller
+                                ..duration = composition.duration
+                                ..forward();
+                            },
+                            repeat: false,
+                            height: 250,
+                            width: 250,
+                          ),
+                        ),
                         const Spacer(),
                         // Card
                         Container(
@@ -117,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   ),
                                   child: Column(
                                     children: [
-                                      // Email
+                                      // Phone Number
                                       Container(
                                         decoration: BoxDecoration(
                                           color: const Color(0xffF1F1F7),
@@ -127,21 +180,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                         ),
                                         child: TextFormField(
                                           controller: _phoneController,
-                                          keyboardType:
-                                          TextInputType.phone,
-                                          // validator: (String? value) {
-                                          //   String inputText = value ?? "";
-                                          //   if (EmailValidator.validate(
-                                          //     inputText,
-                                          //   ) ==
-                                          //       false) {
-                                          //     return "Enter your valid email";
-                                          //   }
-                                          //   return null;
-                                          // },
+                                          keyboardType: TextInputType.phone,
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return "Enter your phone number";
+                                            }
+                                            if (value.length < 11) {
+                                              return "Enter a valid phone number";
+                                            }
+                                            return null;
+                                          },
                                           decoration: const InputDecoration(
                                             prefixIcon: Icon(
-                                              Icons.email_outlined,
+                                              Icons.phone_outlined,
                                               color: Color(0xff6A63FF),
                                             ),
                                             hintText: "Phone Number",
@@ -167,8 +218,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                           controller: _passwordController,
                                           obscureText: _obscureText,
                                           validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
+                                            if (value == null || value.isEmpty) {
                                               return "Please enter your password";
                                             }
                                             if (value.length < 6) {
@@ -216,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ForgetPasswordVerifyEmailScreen(),
+                                          const ForgetPasswordVerifyEmailScreen(),
                                         ),
                                       );
                                     },
@@ -229,25 +279,20 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                // Login
+                                // Login Button
                                 SizedBox(
                                   width: double.infinity,
                                   height: 55,
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: _isLoading
+                                        ? null
+                                        : () {
                                       if (_formKey.currentState!.validate()) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Logging in..."),
-                                          ),
+                                        logInUser(
+                                          _phoneController.text.trim(),
+                                          _passwordController.text.trim(),
                                         );
-
-                                        logInUser(_phoneController.text, _passwordController.text);
-
                                       }
-                                      // NavigationService.pushNamed(AppRoutes.homeScreen);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xff9775FA),
@@ -256,7 +301,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                       ),
                                       elevation: 6,
                                     ),
-                                    child: const Text(
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                        AlwaysStoppedAnimation<Color>(
+                                            Colors.white),
+                                      ),
+                                    )
+                                        : const Text(
                                       "LOGIN",
                                       style: TextStyle(
                                         color: Colors.white,
@@ -314,7 +370,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                     const Text("Don't have an account? "),
                                     GestureDetector(
                                       onTap: () {
-                                        NavigationService.pushNamed(AppRoutes.signupScreen);
+                                        NavigationService.pushNamed(
+                                          AppRoutes.signupScreen,
+                                        );
                                       },
                                       child: const Text(
                                         "Sign Up",
@@ -340,12 +398,5 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }
