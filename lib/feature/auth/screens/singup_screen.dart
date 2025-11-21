@@ -1,3 +1,4 @@
+import 'package:e_pharma/core/services/navigation_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_asset_paths.dart';
@@ -308,7 +309,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     const Text("Already have an account? "),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.pop(context);
+                                        NavigationService.pop();
                                       },
                                       child: const Text(
                                         "Login",

@@ -1,6 +1,6 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
-import 'package:e_pharma/feature/auth/ui/singup_screen.dart';
-import 'package:e_pharma/feature/product/ui/home_screen.dart';
+import 'package:e_pharma/core/services/navigation_service.dart';
+import 'package:e_pharma/routes/app_routes.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -229,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                       //
                                       // }
 
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
+                                      NavigationService.pushNamed(AppRoutes.homeScreen);
 
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -297,13 +297,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                     const Text("Don't have an account? "),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                SignupScreen(),
-                                          ),
-                                        );
+                                        NavigationService.pushNamed(AppRoutes.signupScreen);
                                       },
                                       child: const Text(
                                         "Sign Up",

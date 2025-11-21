@@ -1,10 +1,8 @@
-import 'package:e_pharma/feature/checkout/checkout_screen.dart';
-import 'package:e_pharma/feature/checkout/payment_succesful_screen.dart';
-import 'package:e_pharma/feature/product/ui/home_screen.dart';
 import 'package:e_pharma/feature/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/constants/app_strings.dart';
+import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
 
 class MyApp extends StatelessWidget {
@@ -22,6 +20,7 @@ class MyApp extends StatelessWidget {
           darkTheme: appLightTheme,
           themeMode: ThemeMode.system,
           title: AppStrings.appTitle,
+          navigatorKey: NavigationService.navigatorKey,
           debugShowCheckedModeBanner: false,
           home: SplashScreen(),
         );

@@ -1,8 +1,8 @@
-import 'package:e_pharma/feature/auth/ui/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-
 import '../../../core/constants/app_colors.dart';
+import '../../../core/services/navigation_service.dart';
+import '../../../routes/app_routes.dart';
 
 class ForgotPasswordVerifyOTPScreen extends StatefulWidget {
   const ForgotPasswordVerifyOTPScreen({super.key, required this.email});
@@ -16,7 +16,7 @@ class ForgotPasswordVerifyOTPScreen extends StatefulWidget {
 
 class _ForgotPasswordVerifyOTPScreenState
     extends State<ForgotPasswordVerifyOTPScreen> {
-  TextEditingController _otpController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
 
   void _onVerifyPressed() {
     if (_otpController.text.length == 6) {
@@ -31,12 +31,7 @@ class _ForgotPasswordVerifyOTPScreenState
             ),
           ),
         );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResetPasswordScreen(email: ''),
-          ),
-        );
+        NavigationService.pushNamed(AppRoutes.resetPasswordScreen,arguments: {'email': ""});
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

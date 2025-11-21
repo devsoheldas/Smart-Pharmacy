@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/product_models.dart';
 import '../../../core/services/api_caller.dart';
-import '../widgets/DrawerSectionHeader.dart';
+import '../widgets/drawer_section_header.dart';
 import '../widgets/info_card.dart';
 import '../widgets/product_card.dart';
 import '../widgets/side_menu_tile.dart';
 import 'view_product_details.dart';
 
 
-class HomePageScreen extends StatefulWidget {
-  const HomePageScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePageScreen> createState() => _HomePageScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageScreenState extends State<HomePageScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ProductService _productService = ProductService();
   Products? _products;
