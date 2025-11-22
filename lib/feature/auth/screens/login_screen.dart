@@ -57,11 +57,11 @@ class _LoginScreenState extends State<LoginScreen>
       ApiService apiService = ApiService();
       final result = await apiService.logInUser(phone, password);
 
-      // Hide the loading snackbar
+
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       if (result.success == true) {
-        // Show success message
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.message ?? "Login successful!"),
@@ -69,12 +69,12 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         );
 
-        // Navigate to home screen after a short delay
+
         Future.delayed(const Duration(milliseconds: 1500), () {
           NavigationService.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
         });
       } else {
-        // Show error message from API
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.message ?? "Login failed!"),
@@ -83,10 +83,10 @@ class _LoginScreenState extends State<LoginScreen>
         );
       }
     } catch (e) {
-      // Hide the loading snackbar
+
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-      // Show error message
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Error: ${e.toString()}"),
