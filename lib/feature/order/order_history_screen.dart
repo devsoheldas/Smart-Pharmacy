@@ -2,8 +2,8 @@ import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/core/spacings/space.dart';
 import 'package:e_pharma/core/utils/date_converter.dart';
 import 'package:e_pharma/core/utils/toast_message.dart';
-import 'package:e_pharma/core/widgets/app_button.dart';
 import 'package:e_pharma/core/widgets/appbar/common_appbar.dart';
+import 'package:e_pharma/feature/order/order_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,110 +15,105 @@ class OrderHistoryScreen extends StatefulWidget {
   State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
 
-class _OrderHistoryScreenState extends State<OrderHistoryScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
+  int _selectedTab = 0;
 
   final List<OrderItem> orders = [
     OrderItem(
-      id: "989FD",
-      name: "Doggesh",
-      price: 504.80,
+      id: "87SDF",
+      name: "Napa",
+      price: 50.00,
       qty: 1,
       status: OrderStatus.completed,
-      date: DateTime.now(),
+      date: DateTime.now().subtract(const Duration(days: 30)),
+      orderId: "#ORD-2025-001",
+      orderDate: DateTime.now(),
+      orderDeliveredDate: DateTime.now(),
+      trackingId: "#BC67584",
+      receiverName: "Sohel Das",
+      receiverAddress: "shabar,Canada",
+      receiverPhone: "+8804321432",
+      receiverEmail: "soheldas@gmail.com",
+      paymentMethod: "Bow er jonno nice tai free",
+      totalAmount: 24.99,
+      productDetails: "100 unit",
+      imageUrl: "https://picsum.photos/200",
     ),
     OrderItem(
-      id: "ORD772",
-      name: "Doggesh",
+      id: "T43TS",
+      name: "Napa extra",
       price: 501.80,
       qty: 1,
-      status: OrderStatus.completed,
-      date: DateTime.now(),
-    ),
-    OrderItem(
-      id: "PEND01",
-      name: "Doggesh",
-      price: 504.80,
-      qty: 1,
       status: OrderStatus.pending,
-      date: DateTime.now(),
+      date: DateTime.now().subtract(const Duration(days: 15)),
+      orderId: "#ORD-2025-002",
+      orderDate: DateTime.now(),
+      orderDeliveredDate: DateTime.now(),
+      trackingId: "#BC67585",
+      receiverName: "Arafat",
+      receiverAddress: "Arafat er Basay.",
+      receiverPhone: "+880198743873",
+      receiverEmail: "arafat@gmail.com",
+      paymentMethod: "Visa **** **** **** 4567",
+      totalAmount: 501.80,
+      productDetails: "1 unit",
+      imageUrl: "https://picsum.photos/200",
     ),
     OrderItem(
-      id: "CANC01",
-      name: "Doggesh",
-      price: 504.80,
-      qty: 1,
-      status: OrderStatus.cancelled,
-      date: DateTime.now(),
-      cancelReason: "Changed my mind",
+      id: "FD3FAF",
+      name: "Vitamin",
+      price: 125.50,
+      qty: 2,
+      status: OrderStatus.pending,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      orderId: "#ORD-2025-003",
+      orderDate: DateTime.now(),
+      orderDeliveredDate: null,
+      trackingId: "#BC67586",
+      receiverName: "Sohan & Naim",
+      receiverAddress: "No location ",
+      receiverPhone: "+08843812764",
+      receiverEmail: "nomail@nomail.mail",
+      paymentMethod: "bkash 017******43",
+      totalAmount: 251.00,
+      productDetails: "2 units",
+      imageUrl: "https://picsum.photos/200",
     ),
     OrderItem(
-      id: "C02",
-      name: "Doggesh",
-      price: 899.99,
+      id: "F432R",
+      name: "Napa 3 bela",
+      price: 320.00,
       qty: 1,
       status: OrderStatus.cancelled,
-      date: DateTime.now(),
-      cancelReason: "Found better price",
+      date: DateTime.now().subtract(const Duration(days: 7)),
+      orderId: "#ORD-2025-004",
+      orderDate: DateTime.now(),
+      orderDeliveredDate: null,
+      trackingId: "#BC67587",
+      receiverName: "Ami nije",
+      receiverAddress: "jani naa",
+      receiverPhone: "87231894",
+      receiverEmail: "ismail@gmail.hk",
+      paymentMethod: "No payment for free",
+      totalAmount: 320.00,
+      productDetails: "1 unit",
+      imageUrl: "https://picsum.photos/200",
     ),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging) {
-        setState(() {});
-      }
-    });
-
-    _tabController.animation?.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   void _cancelOrder(String orderId) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Text(
-          "Cancel Order?",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        content: Text(
-          "This action cannot be undone.",
-          style: TextStyle(fontSize: 15),
-        ),
+        title: Text("Cancel Order?"),
+        content: Text("Are you sure you want to cancel this order? This action cannot be undone."),
         actions: [
-          AppButton(
-            title: 'No',
-            height: 47,
-            color: AppColors.greenColor,
-            titleColor: AppColors.whiteColor,
-            borderColor: AppColors.greenColor,
-            onClick: (){
-              Navigator.pop(context);
-            },
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("No, Keep"),
           ),
-          verticalSpacing(8),
-          AppButton(
-            title: "Yes, Cancel",
-            height: 47,
-            color: AppColors.redColor,
-            titleColor: Colors.white,
-            onClick: () {
+          TextButton(
+            onPressed: () {
               setState(() {
                 final i = orders.indexWhere((e) => e.id == orderId);
                 if (i != -1) {
@@ -129,14 +124,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen>
                 }
               });
               Navigator.pop(context);
-              _tabController.animateTo(2);
+              setState(() => _selectedTab = 2);
               toastMessage(
-                "Order cancelled",
+                "Order cancelled successfully",
                 AppColors.greenColor,
-                Colors.white,
+                AppColors.whiteColor,
                 ToastGravity.BOTTOM,
               );
             },
+            child: Text("Yes, Cancel", style: TextStyle(color: AppColors.redColor)),
           ),
         ],
       ),
@@ -145,230 +141,250 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isWebOrTablet = ScreenUtil().screenWidth > 600;
-    final cardWidth = isWebOrTablet ? 500.0 : double.infinity;
-    final horizontalPadding = isWebOrTablet
-        ? EdgeInsets.symmetric(
-            horizontal: (ScreenUtil().screenWidth - cardWidth) / 2,
-          )
-        : EdgeInsets.zero;
-
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      appBar: const CommonAppbar(title: "Order History"),
+      backgroundColor: AppColors.greenishWhite,
+      appBar: const CommonAppbar(title: "My Orders"),
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            child: TabBar(
-              controller: _tabController,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Colors.transparent,
-              dividerColor: Colors.transparent,
-              indicator: BoxDecoration(
-                color: _tabController.index == 0
-                    ? AppColors.greenColor
-                    : _tabController.index == 1
-                    ? AppColors.amberColor
-                    : AppColors.redColor,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              labelColor: Colors.white,
-              unselectedLabelColor: AppColors.textGreyColor,
-              labelStyle: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-              unselectedLabelStyle: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-              tabs: const [
-                Tab(text: "Completed"),
-                Tab(text: "Pending"),
-                Tab(text: "Cancelled"),
+          Container(
+            color: AppColors.whiteColor,
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                _buildTabButton("Completed", 0, OrderStatus.completed),
+                horizontalSpacing(8),
+                _buildTabButton("Pending", 1, OrderStatus.pending),
+                horizontalSpacing(8),
+                _buildTabButton("Cancelled", 2, OrderStatus.cancelled),
               ],
             ),
           ),
-
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: List.generate(
-                3,
-                (index) => _buildTabContent(
-                  OrderStatus.values[index],
-                  cardWidth,
-                  horizontalPadding,
-                ),
-              ),
-            ),
+            child: _buildTabContent(_getStatusForTab(_selectedTab)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTabContent(
-      OrderStatus status,
-      double cardWidth,
-      EdgeInsets padding,
-      ) {
-    final filtered = orders.where((o) => o.status == status).toList();
-    if (filtered.isEmpty) return _buildEmptyState(status);
+  Widget _buildTabButton(String label, int index, OrderStatus status) {
+    final isSelected = _selectedTab == index;
+    final color = _getColorForStatus(status);
 
-    return ListView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      itemCount: filtered.length,
-      itemBuilder: (_, i) => Container(
-        width: double.infinity,
-        margin: EdgeInsets.only(bottom: 12.h),
-        child: InkWell(
-          onTap: () {},
-          child: _buildUnifiedCard(filtered[i]),
+    return Expanded(
+      child: InkWell(
+        onTap: () => setState(() => _selectedTab = index),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          height: 44,
+          decoration: BoxDecoration(
+            color: isSelected ? color : AppColors.whiteColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected ? color : AppColors.greyLight,
+              width: 1.5,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? AppColors.whiteColor : AppColors.textGreyColor,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
+  OrderStatus _getStatusForTab(int tab) {
+    switch (tab) {
+      case 0:
+        return OrderStatus.completed;
+      case 1:
+        return OrderStatus.pending;
+      case 2:
+        return OrderStatus.cancelled;
+      default:
+        return OrderStatus.completed;
+    }
+  }
 
-  Widget _buildUnifiedCard(OrderItem order) {
-    final isCancelled = order.status == OrderStatus.cancelled;
-    final isPending = order.status == OrderStatus.pending;
+  Color _getColorForStatus(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.completed:
+        return AppColors.greenColor;
+      case OrderStatus.pending:
+        return AppColors.amberColor;
+      case OrderStatus.cancelled:
+        return AppColors.redColor;
+    }
+  }
 
-    final imageSize = ScreenUtil().screenWidth > 600 ? 90.0 : 70.0;
+  Widget _buildTabContent(OrderStatus status) {
+    final filtered = orders.where((o) => o.status == status).toList();
+    if (filtered.isEmpty) return _buildEmptyState(status);
 
-    return Card(
-      elevation: 0,
-      color: AppColors.whiteColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-        side: BorderSide(color: AppColors.greyLight.withValues(alpha: 0.5), width: 1),
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: filtered.length,
+      itemBuilder: (_, i) => Padding(
+        padding: EdgeInsets.only(bottom: 12),
+        child: _buildOrderCard(filtered[i]),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(ScreenUtil().screenWidth > 600 ? 24 : 16),
+    );
+  }
+
+  Widget _buildOrderCard(OrderItem order) {
+    final color = _getColorForStatus(order.status);
+    final statusText = _getStatusText(order.status);
+    final statusIcon = _getStatusIcon(order.status);
+
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetailsScreen(order: order),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.greyLight),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "#${order.id}",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textGreyColor,
-                  ),
+            // Header
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isCancelled
-                        ? AppColors.redColor.withValues(alpha: 0.1)
-                        : isPending
-                        ? AppColors.amberColor.withValues(alpha: 0.1)
-                        : AppColors.greenColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Text(
-                    isCancelled
-                        ? "Cancelled"
-                        : isPending
-                        ? "Pending"
-                        : "Completed",
-                    style: TextStyle(
-                      color: isCancelled
-                          ? AppColors.redColor
-                          : isPending
-                          ? AppColors.amberColor
-                          : AppColors.greenColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            verticalSpacing(12),
-
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    "https://picsum.photos/id/237/200/300",
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                horizontalSpacing(14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     children: [
+                      Icon(statusIcon, color: color, size: 18),
+                      horizontalSpacing(8),
                       Text(
-                        order.name,
+                        statusText,
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.blackLight,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      verticalSpacing(4),
-                      Text(
-                        "Quantity: ${order.qty}",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textGreyColor,
-                        ),
-                      ),
-                      Text(
-                        isCancelled
-                            ? "Cancelled on ${getNormalDate(order.date.toIso8601String())}"
-                            : "Ordered on ${getNormalDate(order.date.toIso8601String())}",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textGreyColor,
-                        ),
-                      ),
-                      verticalSpacing(6),
-                      Text(
-                        "Price: ${order.price}",
-                        style: TextStyle(
+                          color: color,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.blackColor,
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            verticalSpacing(20),
-            Row(
-              children: [
-                if (isPending)
-                  Expanded(
-                    child: AppButton(
-                      title: "Cancel Order",
-                      icon: Icons.close,
-                      isNonFill: true,
-                      borderColor: AppColors.redColor,
-                      titleColor: AppColors.redColor,
-                      height: 50,
-                      onClick: () => _cancelOrder(order.id),
+                  Text(
+                    "#${order.id}",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textGreyColor,
                     ),
                   ),
-              ],
+                ],
+              ),
+            ),
+
+            // Content
+            Padding(
+              padding: EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          order.imageUrl,
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      horizontalSpacing(12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              order.name,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.blackLight,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            verticalSpacing(6),
+                            Text(
+                              "Qty: ${order.qty} • \$${order.price.toStringAsFixed(2)}",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textGreyColor,
+                              ),
+                            ),
+                            verticalSpacing(6),
+                            Text(
+                              getNormalDate(order.date.toIso8601String()),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textGreyColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  verticalSpacing(12),
+                  Divider(height: 1, color: AppColors.greyLight),
+                  verticalSpacing(12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Total Amount",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textGreyColor,
+                            ),
+                          ),
+                          verticalSpacing(4),
+                          Text(
+                            "\$${order.totalAmount.toStringAsFixed(2)}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.greenColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      _buildActionButton(order),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -376,22 +392,93 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen>
     );
   }
 
+  Widget _buildActionButton(OrderItem order) {
+    if (order.status == OrderStatus.pending) {
+      return ElevatedButton(
+        onPressed: () => _cancelOrder(order.id),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.whiteColor,
+          foregroundColor: AppColors.redColor,
+          side: BorderSide(color: AppColors.redColor, width: 1.5),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: Text("Cancel"),
+      );
+    } else if (order.status == OrderStatus.completed) {
+      return ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.greenColor,
+          foregroundColor: AppColors.whiteColor,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        ),
+        child: Text("Reorder"),
+      );
+    } else {
+      return Text(
+        "Refunded",
+        style: TextStyle(
+          fontSize: 13,
+          color: AppColors.textGreyColor,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
+  }
+
+  String _getStatusText(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.completed:
+        return "Delivered";
+      case OrderStatus.pending:
+        return "Pending";
+      case OrderStatus.cancelled:
+        return "Cancelled";
+    }
+  }
+
+  IconData _getStatusIcon(OrderStatus status) {
+    switch (status) {
+      case OrderStatus.completed:
+        return Icons.check_circle;
+      case OrderStatus.pending:
+        return Icons.access_time;
+      case OrderStatus.cancelled:
+        return Icons.cancel;
+    }
+  }
+
   Widget _buildEmptyState(OrderStatus status) {
+    final color = _getColorForStatus(status);
+    final icon = _getStatusIcon(status);
+    final title = "No ${_getStatusText(status)} Orders";
+    final subtitle = "Your ${_getStatusText(status).toLowerCase()} orders will appear here";
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            status == OrderStatus.cancelled
-                ? Icons.cancel_outlined
-                : Icons.shopping_bag_outlined,
-            size: 90,
-            color: AppColors.greyLight,
+            icon,
+            size: 64,
+            color: color.withValues(alpha: 0.3),
           ),
-          verticalSpacing(24),
+          verticalSpacing(16),
           Text(
-            "No ${status == OrderStatus.cancelled ? 'cancelled' : status.name.toLowerCase()} orders yet",
-            style: TextStyle(fontSize: 18, color: AppColors.greyColor),
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppColors.blackLight,
+            ),
+          ),
+          verticalSpacing(8),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textGreyColor,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -409,6 +496,18 @@ class OrderItem {
   final OrderStatus status;
   final DateTime date;
   final String? cancelReason;
+  final String orderId;
+  final DateTime orderDate;
+  final DateTime? orderDeliveredDate;
+  final String trackingId;
+  final String receiverName;
+  final String receiverAddress;
+  final String receiverPhone;
+  final String receiverEmail;
+  final String paymentMethod;
+  final double totalAmount;
+  final String productDetails;
+  final String imageUrl;
 
   OrderItem({
     required this.id,
@@ -418,6 +517,18 @@ class OrderItem {
     required this.status,
     required this.date,
     this.cancelReason,
+    required this.orderId,
+    required this.orderDate,
+    this.orderDeliveredDate,
+    required this.trackingId,
+    required this.receiverName,
+    required this.receiverAddress,
+    required this.receiverPhone,
+    required this.receiverEmail,
+    required this.paymentMethod,
+    required this.totalAmount,
+    required this.productDetails,
+    required this.imageUrl,
   });
 
   OrderItem copyWith({OrderStatus? status, String? cancelReason}) => OrderItem(
@@ -428,5 +539,17 @@ class OrderItem {
     status: status ?? this.status,
     date: date,
     cancelReason: cancelReason ?? this.cancelReason,
+    orderId: orderId,
+    orderDate: orderDate,
+    orderDeliveredDate: orderDeliveredDate,
+    trackingId: trackingId,
+    receiverName: receiverName,
+    receiverAddress: receiverAddress,
+    receiverPhone: receiverPhone,
+    receiverEmail: receiverEmail,
+    paymentMethod: paymentMethod,
+    totalAmount: totalAmount,
+    productDetails: productDetails,
+    imageUrl: imageUrl,
   );
 }
