@@ -1,28 +1,55 @@
+import 'package:e_pharma/core/constants/app_colors.dart';
+import 'package:e_pharma/core/services/navigation_service.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
+import 'package:e_pharma/routes/app_routes.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import '../../core/constants/app_asset_paths.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/widgets/social_login_button.dart';
+import 'package:lottie/lottie.dart';
+import '../../../core/constants/app_asset_paths.dart';
+import '../widgets/social_login_button.dart';
+import 'forget_password_verify_email_screen.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
-  bool _obscurePassword = true;
-  bool _obscureConfirm = true;
-
-  final _emailController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+  bool _obscureText = true;
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  late final AnimationController _controller;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  Future<void> logInUser(String phone, String password)async{
+    ApiService apiService = ApiService();
+
+    final result = await apiService.logInUser(phone, password);
+
+    if(result.success == true){
+      NavigationService.pushNamedAndRemoveUntil(AppRoutes.homeScreen);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result.message),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
           gradient:
@@ -37,6 +64,18 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
+                        Center(child: Lottie.asset(
+                          'assets/lottie/login.json',
+                          controller: _controller,
+                          onLoaded: (composition) {
+                            _controller
+                              ..duration = composition.duration
+                              ..forward();
+                          },
+                          repeat: false,
+                          height: 250,
+                          width: 250,
+                        ),),
                         const Spacer(),
                         // Card
                         Container(
@@ -55,11 +94,11 @@ class _SignupScreenState extends State<SignupScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Text(
-                                  "Sign Up",
+                                  "Login",
                                   style: TextStyle(
                                     fontSize: 26,
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xff333333),
+                                    color: Colors.black,
                                   ),
                                 ),
                                 const SizedBox(height: 25),
@@ -87,34 +126,31 @@ class _SignupScreenState extends State<SignupScreen> {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          cursorColor: Colors.blue,
-                                          cursorWidth: 1,
-                                          showCursor: true,
-                                          controller: _emailController,
+                                          controller: _phoneController,
                                           keyboardType:
-                                              TextInputType.emailAddress,
-                                          validator: (String? value) {
-                                            String inputText = value ?? "";
-                                            if (EmailValidator.validate(
-                                                  inputText,
-                                                ) ==
-                                                false) {
-                                              return "Enter your valid email";
-                                            }
-                                            return null;
-                                          },
+                                          TextInputType.phone,
+                                          // validator: (String? value) {
+                                          //   String inputText = value ?? "";
+                                          //   if (EmailValidator.validate(
+                                          //     inputText,
+                                          //   ) ==
+                                          //       false) {
+                                          //     return "Enter your valid email";
+                                          //   }
+                                          //   return null;
+                                          // },
                                           decoration: const InputDecoration(
                                             prefixIcon: Icon(
                                               Icons.email_outlined,
                                               color: Color(0xff6A63FF),
                                             ),
-                                            hintText: "Email Address",
+                                            hintText: "Phone Number",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
+                                            EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -129,11 +165,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                         ),
                                         child: TextFormField(
                                           controller: _passwordController,
-                                          obscureText: _obscurePassword,
+                                          obscureText: _obscureText,
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
-                                              return "Please enter a password";
+                                              return "Please enter your password";
                                             }
                                             if (value.length < 6) {
                                               return "Password must be at least 6 characters";
@@ -147,111 +183,81 @@ class _SignupScreenState extends State<SignupScreen> {
                                             ),
                                             suffixIcon: IconButton(
                                               icon: Icon(
-                                                _obscurePassword
+                                                _obscureText
                                                     ? Icons.visibility_off
                                                     : Icons.visibility,
                                                 color: const Color(0xff6A63FF),
                                               ),
                                               onPressed: () {
                                                 setState(() {
-                                                  _obscurePassword =
-                                                      !_obscurePassword;
+                                                  _obscureText = !_obscureText;
                                                 });
                                               },
                                             ),
                                             hintText: "Password",
                                             border: InputBorder.none,
                                             contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      // Confirm Password
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xffF1F1F7),
-                                          borderRadius: BorderRadius.circular(
-                                            14,
-                                          ),
-                                        ),
-                                        child: TextFormField(
-                                          controller: _confirmController,
-                                          obscureText: _obscureConfirm,
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return "Please confirm your password";
-                                            }
-                                            if (value !=
-                                                _passwordController.text) {
-                                              return "Passwords do not match";
-                                            }
-                                            return null;
-                                          },
-                                          decoration: InputDecoration(
-                                            prefixIcon: const Icon(
-                                              Icons.lock_outline,
-                                              color: Color(0xff6A63FF),
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 16,
                                             ),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(
-                                                _obscureConfirm
-                                                    ? Icons.visibility_off
-                                                    : Icons.visibility,
-                                                color: const Color(0xff6A63FF),
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  _obscureConfirm =
-                                                      !_obscureConfirm;
-                                                });
-                                              },
-                                            ),
-                                            hintText: "Confirm Password",
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 16,
-                                                ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 20),
-                                // Signup Button
+                                const SizedBox(height: 12),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ForgetPasswordVerifyEmailScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Forgot Password?",
+                                      style: TextStyle(
+                                        color: Color(0xff6A63FF),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                // Login
                                 SizedBox(
                                   width: double.infinity,
                                   height: 55,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
-                                        // All validations passed
-                                        // Call signup API or function here
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
                                           const SnackBar(
-                                            content: Text("Signing up..."),
+                                            content: Text("Logging in..."),
                                           ),
                                         );
+
+                                        logInUser(_phoneController.text, _passwordController.text);
+
                                       }
+                                      // NavigationService.pushNamed(AppRoutes.homeScreen);
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xff6C63FF),
+                                      backgroundColor: const Color(0xff9775FA),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       elevation: 6,
                                     ),
                                     child: const Text(
-                                      "SIGN UP",
+                                      "LOGIN",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -261,7 +267,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 25),
-                                //OR
+                                // Divider OR
                                 Row(
                                   children: [
                                     Expanded(
@@ -305,13 +311,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Text("Already have an account? "),
+                                    const Text("Don't have an account? "),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.pop(context);
+                                        NavigationService.pushNamed(AppRoutes.signupScreen);
                                       },
                                       child: const Text(
-                                        "Login",
+                                        "Sign Up",
                                         style: TextStyle(
                                           color: Color(0xff6C63FF),
                                           fontWeight: FontWeight.bold,
@@ -338,9 +344,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
-    _confirmController.dispose();
     super.dispose();
   }
 }

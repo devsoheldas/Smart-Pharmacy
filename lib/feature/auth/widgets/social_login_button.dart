@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/app_asset_paths.dart';
+import '../../../core/constants/app_asset_paths.dart';
 class SocialLoginButton extends StatelessWidget {
   final String image;
   final VoidCallback onTap;

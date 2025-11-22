@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../core/models/cart_model.dart';
+import '../../core/services/navigation_service.dart';
 import '../../core/services/shared_preferences_service.dart';
-import '../home/home_screen.dart';
-
-
-
-
+import '../../routes/app_routes.dart';
+import '../home/screens/home_screen.dart';
 
 
 class CartScreen extends StatefulWidget {
@@ -142,8 +140,8 @@ class _CartScreenState extends State<CartScreen> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageScreen()));
-            },
+              NavigationService.pushNamed(AppRoutes.homeScreen);
+              },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xff9775FA),
               foregroundColor: Colors.white,

@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import '../../../core/models/product_models.dart';
+import '../../../core/services/api_caller.dart';
+import '../../../core/services/navigation_service.dart';
+import '../../../routes/app_routes.dart';
+import '../widgets/drawer_section_header.dart';
+import '../widgets/info_card.dart';
+import '../../product/widgets/product_card.dart';
+import '../../product/screens/view_product_details.dart';
+import '../widgets/side_menu_tile.dart';
 
-import '../../core/models/product_models.dart';
-import '../../core/services/api_caller.dart';
-import '../../core/widgets/DrawerSectionHeader.dart';
-import '../../core/widgets/info_card.dart';
-import '../../core/widgets/product_card.dart';
-import '../../core/widgets/side_menu_tile.dart';
-import '../product/view_product_details.dart';
 
-
-class HomePageScreen extends StatefulWidget {
-  const HomePageScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePageScreen> createState() => _HomePageScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageScreenState extends State<HomePageScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ProductService _productService = ProductService();
+  final ProductService _productService = ProductService();
   Products? _products;
   bool _productInProgress = true;
   String _errorMessage = '';
@@ -92,7 +93,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const InfoCard(name: 'Md Arafath', email: 'a@gmail.com'),
+            const InfoCard(name: 'Example', email: 'example@gmail.com'),
             const DrawerSectionHeader(title: "Browse"),
             Expanded(
               child: SingleChildScrollView(
@@ -152,7 +153,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
             // Notification Button
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                NavigationService.pushNamed(AppRoutes.profileScreen);
+              },
               child: Container(
                 width: 50,
                 height: 50,
@@ -167,28 +170,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ),
                   ],
                 ),
-                child: Stack(
-                  children: [
-                    const Center(
-                      child: Icon(
-                        Icons.notifications_outlined,
-                        color: Color(0xff9775FA),
-                        size: 22,
-                      ),
-                    ),
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  ],
+                child: Center(
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage("https://i.pinimg.com/736x/50/f2/91/50f2915c4f23c9643efb1c8f05020f2b.jpg"),
+                  )
                 ),
               ),
             ),
@@ -207,7 +192,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         children: [
           RichText(
             text: const TextSpan(
-              text: 'Hello! ',
+              text: 'Hello! User ',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -217,7 +202,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Welcome to Groceri!',
+            'Welcome to E-pharma!',
             style: TextStyle(
               color: Colors.grey.shade600,
               fontSize: 15,

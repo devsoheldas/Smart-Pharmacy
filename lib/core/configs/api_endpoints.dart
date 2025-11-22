@@ -1,7 +1,7 @@
 class ApiEndpoints {
 
   //Auth
-  static const login = "login";
+  static const login = "user/authentication/password-login";
   static const logout = "auth/logout";
   static const forgotPassword = "forget-password";
   static const forgotPasswordSubmit = "change-password";

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 class DrawerSectionHeader extends StatelessWidget {
   final String title;
-  final bool showAction;
 
   const DrawerSectionHeader({
     super.key,
     required this.title,
-    this.showAction = false,
   });
 
   @override
@@ -38,35 +36,7 @@ class DrawerSectionHeader extends StatelessWidget {
               ),
             ),
           ),
-
-          if (showAction)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    'View All',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.grey.shade600,
-                    size: 14,
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
+      ]),
     );
   }
 }
