@@ -1,7 +1,6 @@
-import 'package:e_pharma/feature/auth/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
+import 'package:e_pharma/core/services/shared_preference_service.dart';
 import '../../core/services/navigation_service.dart';
 import '../../routes/app_routes.dart';
 
@@ -43,8 +42,15 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 4));
-    NavigationService.pushReplacementNamed(AppRoutes.loginScreen);
+    await Future.delayed(const Duration(seconds: 3));
+
+    final hasToken = await SharedPrefService.hasToken();
+
+    if (hasToken) {
+      NavigationService.pushReplacementNamed(AppRoutes.homeScreen);
+    } else {
+      NavigationService.pushReplacementNamed(AppRoutes.loginScreen);
+    }
   }
 
   @override
