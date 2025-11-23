@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
           routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
            home: SplashScreen(),
-          // home: OrderConfirmedSuccessfulScreen(),
         );
       },
     );
