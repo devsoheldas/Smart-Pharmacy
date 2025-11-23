@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../order/order_history_screen.dart';
-import '../../../core/services/shared_preferences_service.dart';
+import '../../../core/services/shared_preference_service.dart';
 import '../../cart/cart_screen.dart';
 
 
