@@ -2,12 +2,11 @@ import 'package:e_pharma/feature/auth/screens/login_screen.dart';
 import 'package:e_pharma/feature/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../feature/auth/screens/profile/profile_screen.dart';
 import '../feature/auth/screens/reset_password_screen.dart';
 import '../feature/auth/screens/singup_screen.dart';
 import '../feature/home/screens/home_screen.dart';
 import '../feature/order/order_history_screen.dart';
-
+import '../feature/profile/profile_screen.dart';
 
 class AppRoutes {
   static const String dashboard = '/';
