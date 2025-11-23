@@ -1,12 +1,111 @@
 import 'dart:io';
 import 'package:e_pharma/core/constants/app_colors.dart';
+import 'package:e_pharma/core/models/profile_models/profile_details_screen_model.dart';
+import 'package:e_pharma/core/services/network/api_response.dart';
 import 'package:e_pharma/feature/order/order_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../core/services/network/api_service.dart';
 import 'edit_profile_page.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  final ApiService _apiService = ApiService();
+  ProfileDetailsData? _profileData;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileDetails();
+  }
+
+  Future<void> _fetchProfileDetails() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final response = await _apiService.getProfileDetails();
+
+    if (response.success && response.data?.data != null) {
+      setState(() {
+        _profileData = response.data!.data;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _errorMessage = response.message;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _handleProfileUpdate(
+      String name,
+      String email,
+      String phone,
+      String dob,
+      String gender,
+      ) async {
+    // Convert gender string to int (0: Male, 1: Female, 2: Other)
+    int? genderInt;
+    if (gender == 'Male') {
+      genderInt = 0;
+    } else if (gender == 'Female') {
+      genderInt = 1;
+    } else if (gender == 'Other') {
+      genderInt = 2;
+    }
+
+    final response = await _apiService.updateProfile(
+      name: name,
+      email: email,
+      phone: phone,
+      dob: dob.isNotEmpty ? dob : null,
+      gender: genderInt,
+    );
+
+    if (response.success) {
+      // Refresh profile data
+      await _fetchProfileDetails();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  String _getGenderString(int? gender) {
+    if (gender == 0) return 'Male';
+    if (gender == 1) return 'Female';
+    if (gender == 2) return 'Other';
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,11 +236,23 @@ class ProfileScreen extends StatelessWidget {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (_) => EditProfilePage(
-                                                  currentName: "SOHEL DAS",
-                                                  currentEmail:
-                                                  "soheldas3210@gmail.com",
+                                                  currentName: _profileData?.name ?? '',
+                                                  currentEmail: _profileData?.email ?? '',
+                                                  currentPhone: _profileData?.phone ?? '',
+                                                  currentDob: _profileData!.dob != null
+                                                      ? "${_profileData!.dob!.year}-${_profileData!.dob!.month.toString().padLeft(2, '0')}-${_profileData!.dob!.day.toString().padLeft(2, '0')}"
+                                                      : '',
+                                                  currentGender: _getGenderString(_profileData?.gender),
                                                   onImageSelected: (file) {},
-                                                  onSave: (name, email) {},
+                                                  // onSave: (name, email, phone, dob, gender) {
+                                                  //   // // Update your logic here
+                                                  //   // print("Name: $name");
+                                                  //   // print("Phone: $phone");
+                                                  //   // print("Email: $email");
+                                                  //   // print("DOB: $dob");
+                                                  //   // print("Gender: $gender");
+                                                  // },
+                                                  onSave: _handleProfileUpdate,
                                                 ),
                                               ),
                                             );
@@ -174,15 +285,19 @@ class ProfileScreen extends StatelessWidget {
                                       crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'SOHEL DAS',
-                                          style: TextStyle(
+                                        Text(
+                                    _profileData?.name ?? '',
+                                          style: const TextStyle(
                                             color: AppColors.whiteColor,
                                             fontSize: 22,
                                             fontWeight: FontWeight.bold,
                                             letterSpacing: 0.5,
                                           ),
+
                                         ),
+                                        // setState(() {
+                                        //
+                                        // });
                                         const SizedBox(height: 6),
                                         Row(
                                           children: [
@@ -194,7 +309,7 @@ class ProfileScreen extends StatelessWidget {
                                             const SizedBox(width: 6),
                                             Expanded(
                                               child: Text(
-                                                'soheldas3210@gmail.com',
+                                                  _profileData?.email ?? '',
                                                 style: TextStyle(
                                                   color: Colors.white
                                                       .withOpacity(0.9),

@@ -12,8 +12,8 @@ class ApiEndpoints {
   static const resendVerificationCode = "user/registration/resend_verification_code";
 
   //User
-  static const userDetails = "profile";
-  static const updateProfile = "profile";
+  static const userDetails = "user/profile/info";
+  static const updateProfile = "user/profile/update";
 
   //Category
   static const getCategory = "sidebar/category-counts";
@@ -28,6 +28,9 @@ class ApiEndpoints {
 
   //Ads
   static const adsPost = "ads/store";
+
+
+
 
 
 }

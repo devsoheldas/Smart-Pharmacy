@@ -4,6 +4,7 @@ import 'package:e_pharma/core/configs/api_endpoints.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
 import 'package:e_pharma/core/services/shared_preference_service.dart';
 
+import '../../models/profile_models/profile_details_screen_model.dart';
 import '../../models/sing_up_response_model.dart';
 import 'api_response.dart';
 
@@ -101,4 +102,92 @@ class ApiService {
     }
   }
 
+
+  // Fetch Profile Details
+  Future<ApiResponse<ProfileDetailsScreenModel>> getProfileDetails() async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.get(
+        ApiEndpoints.userDetails,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final profileResponse = ProfileDetailsScreenModel.fromJson(response.data);
+        return ApiResponse.success(
+          profileResponse,
+          message: profileResponse.message ?? "Profile fetched successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to fetch profile";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Update Profile
+  Future<ApiResponse<ProfileDetailsScreenModel>> updateProfile({
+    required String name,
+    required String email,
+    required String phone,
+    String? dob,
+    int? gender,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.put(
+        ApiEndpoints.updateProfile,
+        data: {
+          'name': name,
+          'email': email,
+          'phone': phone,
+          if (dob != null) 'dob': dob,
+          if (gender != null) 'gender': gender,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final profileResponse = ProfileDetailsScreenModel.fromJson(response.data);
+        return ApiResponse.success(
+          profileResponse,
+          message: profileResponse.message ?? "Profile updated successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to update profile";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
 }
+
+
+
