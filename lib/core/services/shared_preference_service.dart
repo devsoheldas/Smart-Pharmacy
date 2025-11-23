@@ -11,6 +11,7 @@ class SharedPrefService {
   static const _keyCart = 'cart';
   static const _keyFcmToken = 'fcm_token';
   static const _keyIsFirstRun = 'is_first_run';
+  static const String _cartKey = 'cart_items';
 
   // Save Token with null safety
   static Future<bool> saveToken(String? token) async {
@@ -151,6 +152,32 @@ class SharedPrefService {
   static Future<void> markFirstRunComplete() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyIsFirstRun, false);
+  }
+
+  // Save
+  static Future<void> saveCartItems(List<Map<String, dynamic>> cartItems) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String encodedData = jsonEncode(cartItems);
+    await prefs.setString(_cartKey, encodedData);
+  }
+
+  // Get
+  static Future<List<Map<String, dynamic>>> getCartItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? cartData = prefs.getString(_cartKey);
+
+    if (cartData != null) {
+      final List<dynamic> decodedData = jsonDecode(cartData);
+      return decodedData.map((item) => Map<String, dynamic>.from(item)).toList();
+    }
+
+    return [];
+  }
+
+  // Clear cart items
+  static Future<void> clearCart() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_cartKey);
   }
 
 }

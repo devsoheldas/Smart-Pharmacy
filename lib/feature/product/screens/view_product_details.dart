@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../../core/models/cart_model.dart';
 import '../../../core/models/product_models.dart';
-import '../../../core/services/shared_preferences_service.dart';
+import '../../../core/services/shared_preference_service.dart';
 
 
 class ViewProductDetails extends StatefulWidget {
