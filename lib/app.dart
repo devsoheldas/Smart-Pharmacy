@@ -26,8 +26,8 @@ class MyApp extends StatelessWidget {
           navigatorKey: NavigationService.navigatorKey,
           routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
-          // home: SplashScreen(),
-          home: OrderConfirmedSuccessfulScreen(),
+           home: SplashScreen(),
+          // home: OrderConfirmedSuccessfulScreen(),
         );
       },
     );
