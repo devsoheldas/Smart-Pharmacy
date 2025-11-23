@@ -4,7 +4,6 @@ import 'package:e_pharma/core/utils/date_converter.dart';
 import 'package:e_pharma/core/widgets/appbar/common_appbar.dart';
 import 'package:e_pharma/feature/order/order_history_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   final OrderItem order;
