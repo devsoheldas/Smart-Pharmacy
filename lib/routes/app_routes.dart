@@ -1,6 +1,8 @@
+import 'package:e_pharma/feature/address/address_list_screen.dart';
 import 'package:e_pharma/feature/auth/screens/login_screen.dart';
 import 'package:e_pharma/feature/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 import '../feature/auth/screens/reset_password_screen.dart';
 import '../feature/auth/screens/singup_screen.dart';
@@ -17,6 +19,8 @@ class AppRoutes {
   static const String homeScreen = '/home_screen';
   static const String profileScreen = '/profile_screen';
   static const String orderHistoryScreen = '/order_history_screen';
+  static const String addressListScreen = '/address_list_screen';
+
   // static const String productDetailsScreen = '/product_details_screen';
 
 
@@ -33,6 +37,7 @@ class AppRoutes {
       homeScreen: (context) => HomeScreen(),
       profileScreen: (context) => ProfileScreen(),
       orderHistoryScreen: (context) => OrderHistoryScreen(),
+      addressListScreen: (context) => AddressListScreen(),
       // productDetailsScreen: (context) {
       //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
       //   if (args == null) throw ArgumentError('args is required for /ProductDetailsScreen');

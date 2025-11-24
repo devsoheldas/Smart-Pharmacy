@@ -29,5 +29,12 @@ class ApiEndpoints {
   //Ads
   static const adsPost = "ads/store";
 
+  //Address
+  static const getAllAddresses = "user/address/list";
+  static const addAddress = "user/address/store";
+  static updateAddress(int addressId) => "user/address/update$addressId";
+  static deleteAddress(int addressId) => "user/address/delete$addressId";
+  static setDefaultAddress(int addressId) => "user/address/$addressId/set-default";
+
 
 }

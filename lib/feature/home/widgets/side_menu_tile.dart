@@ -57,7 +57,7 @@ class _SideMenuTileState extends State<SideMenuTile> {
             setState(() {
               _selectedIndex = 2;
             });
-            NavigationService.pushNamed(AppRoutes.orderHistoryScreen);
+            NavigationService.pushNamed(AppRoutes.addressListScreen);
           },
         ),
         _buildMenuTile(
