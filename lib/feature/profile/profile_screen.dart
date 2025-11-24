@@ -6,6 +6,8 @@ import 'package:e_pharma/feature/order/order_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/services/network/api_service.dart';
+import '../../core/services/navigation_service.dart';
+import '../../routes/app_routes.dart';
 import 'edit_profile_page.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -427,7 +429,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         gradient: const LinearGradient(
                           colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          NavigationService.pushNamed(AppRoutes.wishlistScreen);
+                        },
                       ),
 
                       _buildMenuOption(

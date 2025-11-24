@@ -80,6 +80,7 @@ class _SideMenuTileState extends State<SideMenuTile> {
             setState(() {
               _selectedIndex = 4;
             });
+            NavigationService.pushNamed(AppRoutes.wishlistScreen);
           },
         ),
         _buildMenuTile(
