@@ -1,6 +1,6 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/core/models/address_response_model.dart';
-import 'package:e_pharma/core/services/address_service.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:flutter/material.dart';
 
 class EditAddressScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class EditAddressScreen extends StatefulWidget {
 
 class _EditAddressScreenState extends State<EditAddressScreen> {
   final _formKey = GlobalKey<FormState>();
-  final AddressService _addressService = AddressService();
+  final ApiService _apiService = ApiService();
 
   late TextEditingController addressController;
   late TextEditingController cityController;
@@ -89,7 +89,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
       'delivery_instruction': deliveryInstructionController.text,
     };
 
-    final response = await _addressService.updateAddress(
+    final response = await _apiService.updateAddress(
       widget.address.id!,
       addressData,
     );

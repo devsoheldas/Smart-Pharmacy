@@ -1,5 +1,5 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
-import 'package:e_pharma/core/services/address_service.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:flutter/material.dart';
 
 
@@ -12,7 +12,7 @@ class AddAddressScreen extends StatefulWidget {
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
   final _formKey = GlobalKey<FormState>();
-  final AddressService _addressService = AddressService();
+  final ApiService _addressService = ApiService();
 
   late TextEditingController addressController;
   late TextEditingController cityController;
@@ -143,7 +143,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Street Address
+
                   TextFormField(
                     controller: streetAddressController,
                     decoration: inputDecoration("Street Address"),

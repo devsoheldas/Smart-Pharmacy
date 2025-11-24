@@ -1,6 +1,6 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/core/models/address_response_model.dart';
-import 'package:e_pharma/core/services/address_service.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:flutter/material.dart';
 import 'Edit_address_screen.dart';
 import 'add_address_screen.dart';
@@ -13,7 +13,7 @@ class AddressListScreen extends StatefulWidget {
 }
 
 class _AddressListScreenState extends State<AddressListScreen> {
-  final AddressService _addressService = AddressService();
+  final ApiService _addressService = ApiService();
   List<AddressData> addresses = [];
   bool isLoading = true;
   String? errorMessage;
