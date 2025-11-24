@@ -1,3 +1,5 @@
+import 'package:e_pharma/feature/order/order_details_screen.dart';
+import 'package:e_pharma/feature/order/order_history_screen.dart';
 import 'package:e_pharma/feature/splash/splash_screen.dart';
 import 'package:e_pharma/routes/app_routes.dart';
 import 'package:flutter/material.dart';

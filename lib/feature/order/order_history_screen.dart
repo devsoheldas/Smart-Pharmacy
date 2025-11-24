@@ -5,7 +5,6 @@ import 'package:e_pharma/core/utils/toast_message.dart';
 import 'package:e_pharma/core/widgets/appbar/common_appbar.dart';
 import 'package:e_pharma/feature/order/order_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
