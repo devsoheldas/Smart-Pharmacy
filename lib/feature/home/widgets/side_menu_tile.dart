@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../order/order_history_screen.dart';
-import '../../../core/services/shared_preferences_service.dart';
+import '../../../core/services/shared_preference_service.dart';
 import '../../cart/cart_screen.dart';
 
 
@@ -49,9 +49,10 @@ class _SideMenuTileState extends State<SideMenuTile> {
           },
         ),
         _buildMenuTile(
-          icon: Icons.shopping_bag_rounded,
-          title: 'Orders',
+          icon: Icons.location_on_rounded,
+          title: 'Address',
           index: 2,
+
           onTap: () {
             setState(() {
               _selectedIndex = 2;
@@ -60,25 +61,36 @@ class _SideMenuTileState extends State<SideMenuTile> {
           },
         ),
         _buildMenuTile(
-          icon: Icons.favorite_rounded,
-          title: 'Wishlist',
+          icon: Icons.shopping_bag_rounded,
+          title: 'Orders',
           index: 3,
-          badgeCount: 3,
           onTap: () {
             setState(() {
               _selectedIndex = 3;
+            });
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderHistoryScreen()));
+          },
+        ),
+        _buildMenuTile(
+          icon: Icons.favorite_rounded,
+          title: 'Wishlist',
+          index: 4,
+          badgeCount: 3,
+          onTap: () {
+            setState(() {
+              _selectedIndex = 4;
             });
           },
         ),
         _buildMenuTile(
           icon: Icons.shopping_cart_rounded,
           title: 'Cart',
-          index: 4,
+          index: 5,
           badgeCount: _cartItemCount,
 
           onTap: () {
             setState(() {
-              _selectedIndex = 4;
+              _selectedIndex = 5;
             });
             Navigator.push(
               context,

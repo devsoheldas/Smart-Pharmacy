@@ -1,7 +1,5 @@
-import 'package:e_pharma/feature/auth/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-
+import 'package:e_pharma/core/services/shared_preference_service.dart';
 import '../../core/services/navigation_service.dart';
 import '../../routes/app_routes.dart';
 
@@ -14,42 +12,74 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this);
-    _moveToNextScreen();
+    _navigate();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xffF5F6FA),
       body: Center(
-        child: Lottie.asset(
-          'assets/lottie/netflix.json',
-          controller: _controller,
-          onLoaded: (composition) {
-            _controller
-              ..duration = composition.duration
-              ..forward();
-          },
-          repeat: false,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Image.asset(
+              "assets/icons/logo.png",
+              width: 120,
+              height: 120,
+            ),
+
+            const SizedBox(height: 20),
+
+
+            const Text(
+              "E-Pharma",
+              style: TextStyle(
+                fontSize: 30,
+                color: Color(0xff9775FA),
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.5,
+              ),
+            ),
+
+            const SizedBox(height: 5),
+
+
+            const Text(
+              "Your trusted medicine partner",
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+
+            const CircularProgressIndicator(
+              strokeWidth: 3,
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xff9775FA)),
+            )
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _moveToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 4));
-    NavigationService.pushReplacementNamed(AppRoutes.loginScreen);
-  }
+  Future<void> _navigate() async {
+    await Future.delayed(const Duration(seconds: 2));
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    final hasToken = await SharedPrefService.hasToken();
+
+    if (hasToken) {
+      NavigationService.pushReplacementNamed(AppRoutes.homeScreen);
+    } else {
+      NavigationService.pushReplacementNamed(AppRoutes.loginScreen);
+    }
   }
 }

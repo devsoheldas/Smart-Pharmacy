@@ -1,11 +1,11 @@
 class ApiEndpoints {
 
   //Auth
-  static const login = "login";
+  static const login = "user/authentication/password-login";
   static const logout = "auth/logout";
   static const forgotPassword = "forget-password";
   static const forgotPasswordSubmit = "change-password";
-  static const register = "register";
+  static const register = "user/authentication/registration";
   static const passwordUpdate = "user/password/update";
   static const fcmTokenUpdate = "user/fcm_token/update";
   static const otpVerify = "otp-verify";

@@ -16,6 +16,9 @@ class AppColors {
   static const Color textColorSecondary = Color(0xFF3B3B3B);
 
   /// PURPLE-SUITED UI COLORS
+  static const Color blueColor = Color(0xFF2F80ED);
+  static const Color mediumBlueColor = Color(0xFF4667AA);
+  static const Color darkBlueColor = Color(0xFF475D90);
   static const Color whiteColor = Color(0xFFFFFFFF);
   static const Color darkWhite = Color(0xFFF4F4F4);
   static const Color greenishWhite = Color(0xFFF7F5FF);
