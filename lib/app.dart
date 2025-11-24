@@ -1,3 +1,5 @@
+import 'package:e_pharma/feature/order/order_details_screen.dart';
+import 'package:e_pharma/feature/order/order_history_screen.dart';
 import 'package:e_pharma/feature/splash/splash_screen.dart';
 import 'package:e_pharma/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
 import 'feature/order/order_confirmed_screen.dart';
 import 'feature/order/order_confirmed_successful_screen.dart';
+import 'feature/order/order_track_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,7 +29,7 @@ class MyApp extends StatelessWidget {
           navigatorKey: NavigationService.navigatorKey,
           routes: AppRoutes.getRoutes(),
           debugShowCheckedModeBanner: false,
-          home: SplashScreen(),
+           home: SplashScreen(),
         );
       },
     );

@@ -1,6 +1,7 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:flutter/material.dart';
-import 'address_moduls.dart';
+
 
 class AddAddressScreen extends StatefulWidget {
   const AddAddressScreen({super.key});
@@ -11,30 +12,42 @@ class AddAddressScreen extends StatefulWidget {
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
   final _formKey = GlobalKey<FormState>();
+  final ApiService _addressService = ApiService();
 
-  late TextEditingController streetSearchController;
-  late TextEditingController nameController;
-  late TextEditingController phoneController;
-  late TextEditingController houseController;
-  late TextEditingController floorController;
-  late TextEditingController streetController;
+  late TextEditingController addressController;
   late TextEditingController cityController;
-  late TextEditingController postCodeController;
+  late TextEditingController streetAddressController;
+  late TextEditingController apartmentController;
+  late TextEditingController floorController;
+  late TextEditingController deliveryInstructionController;
+  late TextEditingController latitudeController;
+  late TextEditingController longitudeController;
+
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    streetSearchController = TextEditingController();
-    nameController = TextEditingController();
-    phoneController = TextEditingController();
-    houseController = TextEditingController();
-    floorController = TextEditingController();
-    streetController = TextEditingController();
+    addressController = TextEditingController();
     cityController = TextEditingController();
-    postCodeController = TextEditingController();
+    streetAddressController = TextEditingController();
+    apartmentController = TextEditingController();
+    floorController = TextEditingController();
+    deliveryInstructionController = TextEditingController();
   }
 
-  InputDecoration inputDecoration(String label) {
+  @override
+  void dispose() {
+    addressController.dispose();
+    cityController.dispose();
+    streetAddressController.dispose();
+    apartmentController.dispose();
+    floorController.dispose();
+    deliveryInstructionController.dispose();
+    super.dispose();
+  }
+
+  InputDecoration inputDecoration(String label, {bool required = true}) {
     return InputDecoration(
       labelText: label,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -49,110 +62,148 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     );
   }
 
+  Future<void> _saveAddress() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+
+
+    final addressData = {
+      'address': addressController.text,
+      'city': cityController.text,
+      'street_address': streetAddressController.text,
+      'apartment': apartmentController.text,
+      'floor': floorController.text,
+      'delivery_instruction': deliveryInstructionController.text,
+
+    };
+
+    final response = await _addressService.addAddress(addressData);
+
+    setState(() => isLoading = false);
+
+    if (response.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.message),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pop(context, true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        title: Text("Add New Address",style: Theme.of(context).textTheme.headlineMedium ,),
+        title: Text(
+          "Add New Address",
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Type street name or post code for location",
-                style: Theme.of(context).textTheme.titleMedium,),
-              SizedBox(height: 6),
-              TextFormField(
-                controller: streetSearchController,
-                keyboardType: TextInputType.streetAddress,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  hintText: "Bernauer Straße, Berlin, Germany",
-                  suffixIcon: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => streetSearchController.clear()),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                validator: (v) => v!.isEmpty ? "Enter street or postcode" : null,
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: nameController,
-                  decoration: inputDecoration("Name"),
-                  validator: (v) => v!.isEmpty ? "Enter name" : null),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: phoneController,
-                  decoration: inputDecoration("Phone"),
-                  keyboardType: TextInputType.phone,
-                  validator: (v) => v!.isEmpty ? "Enter phone" : null),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: houseController,
-                  decoration: inputDecoration("House Number"),
-                  validator: (v) => v!.isEmpty ? "Enter house number" : null),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: floorController,
-                  decoration: inputDecoration("Floor"),
-                  validator: (v) => v!.isEmpty ? "Enter floor" : null),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: streetController,
-                  decoration: inputDecoration("Street Name"),
-                  validator: (v) => v!.isEmpty ? "Enter street name" : null),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: cityController,
-                  decoration: inputDecoration("City"),
-                  validator: (v) => v!.isEmpty ? "Enter city" : null),
-              SizedBox(height: 16),
-              TextFormField(
-                  controller: postCodeController,
-                  decoration: inputDecoration("Post Code"),
-                  keyboardType: TextInputType.number,
-                  validator: (v) => v!.isEmpty ? "Enter post code" : null),
-              SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
-                    foregroundColor: AppColors.whiteColor,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Enter your address details",
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  child: Text("+ Add New Address",
-                    style: Theme.of(context).textTheme.titleMedium,),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pop(
-                        context,
-                        Address(
-                          streetSearch: streetSearchController.text,
-                          name: nameController.text,
-                          phone: phoneController.text,
-                          houseNumber: houseController.text,
-                          floor: floorController.text,
-                          streetName: streetController.text,
-                          city: cityController.text,
-                          postCode: postCodeController.text,
+                  const SizedBox(height: 16),
+
+
+                  TextFormField(
+                    controller: addressController,
+                    decoration: inputDecoration("Address"),
+                    maxLines: 2,
+                    validator: (v) => v!.isEmpty ? "Enter address" : null,
+                  ),
+                  const SizedBox(height: 16),
+
+
+                  TextFormField(
+                    controller: cityController,
+                    decoration: inputDecoration("City"),
+                    validator: (v) => v!.isEmpty ? "Enter city" : null,
+                  ),
+                  const SizedBox(height: 16),
+
+
+                  TextFormField(
+                    controller: streetAddressController,
+                    decoration: inputDecoration("Street Address"),
+                    validator: (v) => v!.isEmpty ? "Enter street address" : null,
+                  ),
+                  const SizedBox(height: 16),
+
+
+                  TextFormField(
+                    controller: apartmentController,
+                    decoration: inputDecoration("Apartment / House Number"),
+                    validator: (v) => v!.isEmpty ? "Enter apartment/house number" : null,
+                  ),
+                  const SizedBox(height: 16),
+
+
+                  TextFormField(
+                    controller: floorController,
+                    decoration: inputDecoration("Floor", required: false),
+                  ),
+                  const SizedBox(height: 16),
+
+
+                  TextFormField(
+                    controller: deliveryInstructionController,
+                    decoration: inputDecoration("Delivery Instruction", required: false),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 16),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        foregroundColor: AppColors.whiteColor,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    }
-                  },
-                ),
+                      ),
+                      onPressed: isLoading ? null : _saveAddress,
+                      child: Text(
+                        isLoading ? "Saving..." : "+ Add New Address",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          if (isLoading)
+            Container(
+              color: Colors.black26,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }

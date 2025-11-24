@@ -12,22 +12,32 @@ class ApiEndpoints {
   static const resendVerificationCode = "user/registration/resend_verification_code";
 
   //User
-  static const userDetails = "profile";
-  static const updateProfile = "profile";
+  static const userDetails = "user/profile/info";
+  static const updateProfile = "user/profile/update";
 
   //Category
-  static const getCategory = "sidebar/category-counts";
+  static const getCategory = "categories";
   static const getSubCategory = "sidebar/sub-category-counts";
   static getFieldSubCategory(int categoryId) => "sidebar/get-field-by-sub-category/$categoryId";
 
 
   //Products
-  static const productList = "products/list";
+  static const productList = "products";
   static productDetails(String productSlug) => "products/$productSlug";
   static relatedProducts(String productId) => "products/related/$productId";
 
   //Ads
   static const adsPost = "ads/store";
+
+  //Address
+  static const getAllAddresses = "user/address/list";
+  static const addAddress = "user/address/store";
+  static updateAddress(int addressId) => "user/address/update$addressId";
+  static deleteAddress(int addressId) => "user/address/delete$addressId";
+  static setDefaultAddress(int addressId) => "user/address/$addressId/set-default";
+
+
+
 
 
 }

@@ -1,9 +1,13 @@
+import 'dart:ffi';
+
 import 'package:dio/dio.dart';
 import 'package:e_pharma/core/configs/api_config.dart';
 import 'package:e_pharma/core/configs/api_endpoints.dart';
+import 'package:e_pharma/core/models/address_response_model.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
+import 'package:e_pharma/core/models/product_models.dart';
 import 'package:e_pharma/core/services/shared_preference_service.dart';
-
+import '../../models/profile_models/profile_details_screen_model.dart';
 import '../../models/sing_up_response_model.dart';
 import 'api_response.dart';
 
@@ -31,6 +35,7 @@ class ApiService {
     );
   }
 
+  // Login
   Future<ApiResponse<LogInResponseModel>> logInUser(
     String phone,
     String password,
@@ -63,12 +68,13 @@ class ApiService {
     }
   }
 
+  // Signup
   Future<ApiResponse<SingupResponseModel>> singUpUser(
-      String phone,
-      String password,
-      String name,
-      String confirmationPassword,
-      ) async {
+    String phone,
+    String password,
+    String name,
+    String confirmationPassword,
+  ) async {
     try {
       final response = await dio.post(
         ApiEndpoints.register,
@@ -80,7 +86,6 @@ class ApiService {
         },
       );
 
-
       if (response.statusCode == 200 || response.statusCode == 201) {
         final signUpResponse = SingupResponseModel.fromJson(response.data);
         return ApiResponse.success(
@@ -88,17 +93,299 @@ class ApiService {
           message: signUpResponse.message ?? "Registration successful",
         );
       } else {
-
         final errorMsg = response.data?["message"] ?? "Registration failed";
         return ApiResponse.error(errorMsg);
       }
     } on DioException catch (e) {
-      final errorMsg = e.response?.data?["message"] ?? "Registration failed network error";
+      final errorMsg =
+          e.response?.data?["message"] ?? "Registration failed network error";
       return ApiResponse.error(errorMsg);
     } catch (e) {
-
       return ApiResponse.error("error: ${e.toString()}");
     }
   }
 
+  // fetched All Address
+  Future<ApiResponse<List<AddressData>>> getAllAddresses() async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty){
+        return ApiResponse.error('No Address Found');
+      }
+      final response = await dio.get(
+        ApiEndpoints.getAllAddresses,
+        options: Options(
+          headers: {
+            'Authorization' : 'Bearer $token'
+          }
+        )
+      );
+
+      if (response.statusCode == 200) {
+        final addressModel = AddressModel.fromJson(response.data);
+
+        return ApiResponse.success(
+          addressModel.data ?? [],
+          message: addressModel.message ?? "Addresses fetched successfully",
+        );
+      } else {
+        return ApiResponse.error("Failed to fetch addresses");
+      }
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error while fetching addresses",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Add new address
+  Future<ApiResponse<AddressData>> addAddress(Map<String, dynamic> addressData) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty){
+        return ApiResponse.error('No Address Found');
+      }
+      final response = await dio.get(
+          ApiEndpoints.getAllAddresses,
+          options: Options(
+              headers: {
+                'Authorization' : 'Bearer $token'
+              }
+          )
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final addressModel = AddressModel.fromJson(response.data);
+
+        return ApiResponse.success(
+          addressModel.data?.first ?? AddressData(),
+          message: addressModel.message ?? "Address added successfully",
+        );
+      } else {
+        return ApiResponse.error("Failed to add address");
+      }
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error while adding address",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Update address
+  Future<ApiResponse<AddressData>> updateAddress(int addressId, Map<String, dynamic> addressData) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty){
+        return ApiResponse.error('No Address Found');
+      }
+      final response = await dio.get(
+          ApiEndpoints.getAllAddresses,
+          options: Options(
+              headers: {
+                'Authorization' : 'Bearer $token'
+              }
+          )
+      );
+
+      if (response.statusCode == 200) {
+        final addressModel = AddressModel.fromJson(response.data);
+
+        return ApiResponse.success(
+          addressModel.data?.first ?? AddressData(),
+          message: addressModel.message ?? "Address updated successfully",
+        );
+      } else {
+        return ApiResponse.error("Failed to update address");
+      }
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error while updating address",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Delete address
+  Future<ApiResponse<bool>> deleteAddress(int addressId) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty){
+        return ApiResponse.error('No Address Found');
+      }
+      final response = await dio.get(
+          ApiEndpoints.getAllAddresses,
+          options: Options(
+              headers: {
+                'Authorization' : 'Bearer $token'
+              }
+          )
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return ApiResponse.success(
+          true,
+          message: response.data?["message"] ?? "Address deleted successfully",
+        );
+      } else {
+        return ApiResponse.error("Failed to delete address");
+      }
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error while deleting address",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Set default address
+  Future<ApiResponse<bool>> setDefaultAddress(int addressId) async {
+    try {
+      final response = await dio.post(ApiEndpoints.setDefaultAddress(addressId));
+
+      if (response.statusCode == 200) {
+        return ApiResponse.success(
+          true,
+          message: response.data?["message"] ?? "Default address updated successfully",
+        );
+      } else {
+        return ApiResponse.error("Failed to set default address");
+      }
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error while setting default address",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Fetch Profile Details
+  Future<ApiResponse<ProfileDetailsScreenModel>> getProfileDetails() async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.get(
+        ApiEndpoints.userDetails,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final profileResponse = ProfileDetailsScreenModel.fromJson(response.data);
+        return ApiResponse.success(
+          profileResponse,
+          message: profileResponse.message ?? "Profile fetched successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to fetch profile";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Update Profile
+  Future<ApiResponse<ProfileDetailsScreenModel>> updateProfile({
+    required String name,
+    required String email,
+    required String phone,
+    String? dob,
+    int? gender,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.updateProfile,
+        data: {
+          'name': name,
+          'email': email,
+          'phone': phone,
+          if (dob != null) 'dob': dob,
+          if (gender != null) 'gender': gender,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final profileResponse = ProfileDetailsScreenModel.fromJson(
+            response.data);
+        return ApiResponse.success(
+          profileResponse,
+          message: profileResponse.message ?? "Profile updated successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ??
+            "Failed to update profile";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+  // Get Products
+  Future<ApiResponse<Product>> getProducts() async {
+    try {
+      final response = await dio.get(ApiEndpoints.productList);
+
+      if (response.statusCode == 200) {
+        final product = Product.fromJson(response.data);
+        return ApiResponse.success(
+          product,
+          message: "Products loaded successfully",
+        );
+      } else {
+        return ApiResponse.error(
+          "Failed to load products: ${response.statusCode}",
+        );
+      }
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Failed to load products",
+      );
+    } catch (e) {
+      return ApiResponse.error("Failed to load products: $e");
+    }
+  }
+
+  // categories
+  Future<Response> get(String endpoint) async {
+    try {
+      return await dio.get(endpoint);
+    } on DioException catch (e) {
+      throw Exception(e.message);
+    }
+  }
 }
+
+
+

@@ -4,9 +4,12 @@ import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   final Function(File file) onImageSelected;
-  final Function(String name, String email) onSave;
+  final Function(String name, String email, String phone, String dob, String gender) onSave;
   final String currentName;
   final String currentEmail;
+  final String currentPhone;
+  final String currentDob;
+  final String currentGender;
 
   const EditProfilePage({
     super.key,
@@ -14,6 +17,9 @@ class EditProfilePage extends StatefulWidget {
     required this.onSave,
     required this.currentName,
     required this.currentEmail,
+    this.currentPhone = '',
+    this.currentDob = '',
+    this.currentGender = '',
   });
 
   @override
@@ -23,8 +29,15 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage>
     with SingleTickerProviderStateMixin {
   File? selectedImage;
+
   late TextEditingController nameController;
   late TextEditingController emailController;
+  late TextEditingController phoneController;
+  late TextEditingController dobController;
+
+  String? selectedGender;
+  final List<String> genderOptions = ['Male', 'Female', 'Other'];
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -36,6 +49,12 @@ class _EditProfilePageState extends State<EditProfilePage>
     super.initState();
     nameController = TextEditingController(text: widget.currentName);
     emailController = TextEditingController(text: widget.currentEmail);
+    phoneController = TextEditingController(text: widget.currentPhone);
+    dobController = TextEditingController(text: widget.currentDob);
+
+    if (genderOptions.contains(widget.currentGender)) {
+      selectedGender = widget.currentGender;
+    }
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -51,6 +70,8 @@ class _EditProfilePageState extends State<EditProfilePage>
   void dispose() {
     nameController.dispose();
     emailController.dispose();
+    phoneController.dispose();
+    dobController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -69,7 +90,38 @@ class _EditProfilePageState extends State<EditProfilePage>
         widget.onImageSelected(File(picked.path));
       }
     } catch (e) {
-      _showErrorSnackBar('Failed to pick image. Please try again.');
+      _showErrorSnackBar('Failed to pick image.');
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Theme.of(context).primaryColor,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600), // Date picker text size
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        dobController.text = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      });
     }
   }
 
@@ -100,7 +152,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                 const Text(
                   'Select Image Source',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16, // Smaller title
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -141,26 +193,22 @@ class _EditProfilePageState extends State<EditProfilePage>
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isLoading = true);
 
     try {
-      // Simulate API call delay
       await Future.delayed(const Duration(milliseconds: 500));
-
-      widget.onSave(nameController.text.trim(), emailController.text.trim());
-
+      widget.onSave(
+        nameController.text.trim(),
+        emailController.text.trim(),
+        phoneController.text.trim(),
+        dobController.text.trim(),
+        selectedGender ?? '',
+      );
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
       }
     } catch (e) {
-      _showErrorSnackBar('Failed to save profile. Please try again.');
+      _showErrorSnackBar('Failed to save profile.');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -169,7 +217,7 @@ class _EditProfilePageState extends State<EditProfilePage>
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(message, style: const TextStyle(fontSize: 13)), // Small text
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
       ),
@@ -177,23 +225,21 @@ class _EditProfilePageState extends State<EditProfilePage>
   }
 
   String? _validateName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Name is required';
-    }
-    if (value.trim().length < 2) {
-      return 'Name must be at least 2 characters';
-    }
+    if (value == null || value.trim().isEmpty) return 'Name is required';
+    if (value.trim().length < 2) return 'At least 2 characters';
     return null;
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
-    }
+    if (value == null || value.trim().isEmpty) return 'Email is required';
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value.trim())) {
-      return 'Please enter a valid email address';
-    }
+    if (!emailRegex.hasMatch(value.trim())) return 'Invalid email';
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) return 'Phone is required';
+    if (value.trim().length < 10) return 'Invalid phone number';
     return null;
   }
 
@@ -210,7 +256,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           'Edit Profile',
           style: TextStyle(
             color: Colors.black87,
-            fontSize: 18,
+            fontSize: 16, // Adjusted to 16 for a cleaner look
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -225,16 +271,13 @@ class _EditProfilePageState extends State<EditProfilePage>
             child: const Icon(
               Icons.arrow_back_ios_new_rounded,
               color: Colors.black87,
-              size: 18,
+              size: 16, // Smaller icon
             ),
           ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            color: Colors.grey.shade200,
-          ),
+          child: Container(height: 1, color: Colors.grey.shade200),
         ),
       ),
       body: FadeTransition(
@@ -243,23 +286,18 @@ class _EditProfilePageState extends State<EditProfilePage>
           key: _formKey,
           child: SingleChildScrollView(
             padding: EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 24,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              left: 20, // Reduced padding slightly for small devices
+              right: 20,
+              top: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Profile Image Section
                 _buildProfileImageSection(),
-                const SizedBox(height: 40),
-
-                // Form Fields
+                const SizedBox(height: 24), // Reduced spacing
                 _buildFormFields(),
-                const SizedBox(height: 40),
-
-                // Save Button
+                const SizedBox(height: 32),
                 _buildSaveButton(),
               ],
             ),
@@ -280,23 +318,19 @@ class _EditProfilePageState extends State<EditProfilePage>
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: CircleAvatar(
-                radius: 60,
+                radius: 50, // Slightly smaller image (was 60)
                 backgroundColor: Colors.grey.shade200,
                 backgroundImage: selectedImage != null
                     ? FileImage(selectedImage!)
                     :  AssetImage('assets/images/profile_pic.png') as ImageProvider,
                 child: selectedImage == null
-                    ? Icon(
-                  Icons.person_rounded,
-                  size: 60,
-                  color: Colors.grey.shade400,
-                )
+                    ? Icon(Icons.person_rounded, size: 50, color: Colors.grey.shade400)
                     : null,
               ),
             ),
@@ -306,34 +340,30 @@ class _EditProfilePageState extends State<EditProfilePage>
               child: GestureDetector(
                 onTap: _showImageSourceDialog,
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10), // Smaller touch target area
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
                         color: Theme.of(context).primaryColor.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.camera_alt_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 18),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Text(
-          'Tap to change profile photo',
+          'Tap to change photo',
           style: TextStyle(
             color: Colors.grey.shade600,
-            fontSize: 14,
+            fontSize: 12, // Small helper text
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -346,36 +376,67 @@ class _EditProfilePageState extends State<EditProfilePage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLabel('Full Name'),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         _buildTextField(
           controller: nameController,
-          hintText: 'Enter your full name',
+          hintText: 'Your name',
           prefixIcon: Icons.person_outline_rounded,
           validator: _validateName,
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
+
+
+        _buildLabel('Phone Number'),
+        const SizedBox(height: 6),
+        _buildTextField(
+          controller: phoneController,
+          hintText: '+8801 234 567 890',
+          prefixIcon: Icons.phone_outlined,
+          keyboardType: TextInputType.phone,
+          validator: _validatePhone,
+        ),
+        const SizedBox(height: 16),
 
         _buildLabel('Email Address'),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         _buildTextField(
           controller: emailController,
-          hintText: 'Enter your email address',
+          hintText: 'email@address.com',
           prefixIcon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
           validator: _validateEmail,
         ),
-      ],
-    );
-  }
+        const SizedBox(height: 16),
 
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: Colors.black87,
-      ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLabel('Birth Date'),
+                  const SizedBox(height: 6),
+                  _buildDateField(),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12), // Tighter spacing
+            Expanded(
+              flex: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLabel('Gender'),
+                  const SizedBox(height: 6),
+                  _buildGenderDropdown(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -390,34 +451,84 @@ class _EditProfilePageState extends State<EditProfilePage>
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
-      style: const TextStyle(fontSize: 16),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey.shade500),
-        prefixIcon: Icon(prefixIcon, color: Colors.grey.shade600),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.grey.shade200),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.grey.shade200),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      // Text size 14 for input
+      style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w500),
+      decoration: _commonInputDecoration(hintText, prefixIcon),
+    );
+  }
+
+  Widget _buildDateField() {
+    return TextFormField(
+      controller: dobController,
+      readOnly: true,
+      onTap: () => _selectDate(context),
+      validator: (value) => value!.isEmpty ? 'Req' : null,
+      style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w500),
+      decoration: _commonInputDecoration('YYYY-MM-DD', Icons.calendar_today_rounded),
+    );
+  }
+
+  Widget _buildGenderDropdown() {
+    return DropdownButtonFormField<String>(
+      value: selectedGender,
+      icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+      style: const TextStyle(fontSize: 14, color: Colors.black87, fontWeight: FontWeight.w500),
+      validator: (value) => value == null ? 'Req' : null,
+      decoration: _commonInputDecoration('Select', Icons.wc_rounded),
+      items: genderOptions.map((String gender) {
+        return DropdownMenuItem<String>(
+          value: gender,
+          child: Text(gender, style: const TextStyle(fontSize: 14)),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() => selectedGender = newValue);
+      },
+    );
+  }
+
+  InputDecoration _commonInputDecoration(String hintText, IconData prefixIcon) {
+    return InputDecoration(
+      hintText: hintText,
+      // Small hint text
+      hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+      prefixIcon: Icon(prefixIcon, color: Colors.grey.shade500, size: 20),
+      filled: true,
+      fillColor: Colors.white,
+      isDense: true, // IMPORTANT: Makes field more compact
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14), // Slightly tighter radius
+        borderSide: BorderSide(color: Colors.grey.shade200),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Colors.grey.shade200),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: Colors.red, width: 1.5),
+      ),
+      // Reduced content padding for "Small" look
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      errorStyle: const TextStyle(fontSize: 11), // Smaller error text
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13, // Small label
+        fontWeight: FontWeight.w600,
+        color: Colors.grey.shade700, // Softer color
       ),
     );
   }
@@ -425,7 +536,7 @@ class _EditProfilePageState extends State<EditProfilePage>
   Widget _buildSaveButton() {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 52, // Height reduced from 56
       child: ElevatedButton(
         onPressed: _isLoading ? null : _saveProfile,
         style: ElevatedButton.styleFrom(
@@ -433,14 +544,14 @@ class _EditProfilePageState extends State<EditProfilePage>
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
           disabledBackgroundColor: Colors.grey.shade300,
         ),
         child: _isLoading
             ? const SizedBox(
-          height: 24,
-          width: 24,
+          height: 20,
+          width: 20,
           child: CircularProgressIndicator(
             strokeWidth: 2,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -449,7 +560,7 @@ class _EditProfilePageState extends State<EditProfilePage>
             : const Text(
           'Save Changes',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 15, // Button text reduced
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -474,31 +585,27 @@ class _ImageSourceButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 16), // Less padding
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: Colors.grey.shade200),
         ),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                color: Theme.of(context).primaryColor,
-                size: 24,
-              ),
+              child: Icon(icon, color: Theme.of(context).primaryColor, size: 22),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Text(
               label,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 13, // Smaller label
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
