@@ -290,7 +290,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                 backgroundColor: Colors.grey.shade200,
                 backgroundImage: selectedImage != null
                     ? FileImage(selectedImage!)
-                    : const AssetImage('assets/images/profile_pic.png') as ImageProvider,
+                    :  AssetImage('assets/images/profile_pic.png') as ImageProvider,
                 child: selectedImage == null
                     ? Icon(
                   Icons.person_rounded,
