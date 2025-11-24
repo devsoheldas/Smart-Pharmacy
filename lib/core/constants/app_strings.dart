@@ -46,5 +46,6 @@ class AppStrings {
   static const OrderTime =  " Get Delivery by Mon, 06 feb - Thu, 09 feb" ;
   static const TrackMyOrder =  " Track My Order" ;
   static const ContinueShopping =  " Continue Shopping" ;
+
 // Add more strings
 }

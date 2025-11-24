@@ -37,7 +37,7 @@ class AppColors {
   static const Color cherryColor = Color(0xFFEF5A57);
   static const Color greenColor = Color(0xFF06A366);
   static const Color greenDeepColor = Color(0xFF008000);
-  static const Color mintGreenColor = Color(0xFF5DB091);
+  static const Color mintGreenColor = Color(0xFF64BC9B);
 
   /// YELLOW / AMBER
   static const Color amberColor = Color(0xFFF2A43A);
@@ -61,6 +61,7 @@ class AppColors {
   static const Color ctaLight = Color(0xFFFDF1E3);
   static const Color LightOrange = Color(0xFFECCCA2);
   static const Color Orange = Color(0xFFD85F06);
+  static const Color blue = Color(0xFF0641D8);
 
   /// CARD COLOR
   static const Color CardColor = Color(0xFFF2F0FD);
