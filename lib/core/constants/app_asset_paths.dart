@@ -1,4 +1,6 @@
 
+import 'package:flutter/cupertino.dart';
+
 class AssetPaths {
   static const icons = 'assets/icons';
   static const images = 'assets/images';
@@ -37,6 +39,7 @@ class AssetPaths {
   static const OrderFeild_Icon = '$images/faield_ison.png';
   static const Nogod_Icon = '$images/nogod_icon.png';
   static const Order_Confirmed = '$images/order_confimed.png';
+  static const Placeholder = "$images/placeholder.jpg";
 
 
 // Add more assets

@@ -33,9 +33,9 @@ class ApiService {
 
   // Login
   Future<ApiResponse<LogInResponseModel>> logInUser(
-      String phone,
-      String password,
-      ) async {
+    String phone,
+    String password,
+  ) async {
     try {
       final response = await dio.post(
         ApiEndpoints.login,
@@ -66,11 +66,11 @@ class ApiService {
 
   // Signup
   Future<ApiResponse<SingupResponseModel>> singUpUser(
-      String phone,
-      String password,
-      String name,
-      String confirmationPassword,
-      ) async {
+    String phone,
+    String password,
+    String name,
+    String confirmationPassword,
+  ) async {
     try {
       final response = await dio.post(
         ApiEndpoints.register,
@@ -93,7 +93,8 @@ class ApiService {
         return ApiResponse.error(errorMsg);
       }
     } on DioException catch (e) {
-      final errorMsg = e.response?.data?["message"] ?? "Registration failed network error";
+      final errorMsg =
+          e.response?.data?["message"] ?? "Registration failed network error";
       return ApiResponse.error(errorMsg);
     } catch (e) {
       return ApiResponse.error("error: ${e.toString()}");
@@ -112,14 +113,19 @@ class ApiService {
           message: "Products loaded successfully",
         );
       } else {
-        return ApiResponse.error("Failed to load products: ${response.statusCode}");
+        return ApiResponse.error(
+          "Failed to load products: ${response.statusCode}",
+        );
       }
     } on DioException catch (e) {
-      return ApiResponse.error(e.response?.data?["message"] ?? "Failed to load products");
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Failed to load products",
+      );
     } catch (e) {
       return ApiResponse.error("Failed to load products: $e");
     }
   }
+
   // categories
   Future<Response> get(String endpoint) async {
     try {
@@ -128,6 +134,4 @@ class ApiService {
       throw Exception(e.message);
     }
   }
-
-
 }

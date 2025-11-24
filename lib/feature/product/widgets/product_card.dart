@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart' as app_asset_paths;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import '../../../core/constants/app_asset_paths.dart';
 
 class ProductCard extends StatelessWidget {
   final String image;
@@ -31,18 +34,18 @@ class ProductCard extends StatelessWidget {
       discountPercent = ((regularPrice - price) / regularPrice * 100);
     }
 
-
     if (discountPercent.isNaN || discountPercent.isInfinite) {
       discountPercent = 0;
       hasDiscount = false;
     }
 
-
     if (hasDiscount) {
       debugPrint(' Product: $name');
       debugPrint('   Regular Price: ৳$regularPrice');
       debugPrint('   Discounted Price: ৳$price');
-      debugPrint('   Discount Percentage: ${discountPercent.toStringAsFixed(2)}%');
+      debugPrint(
+        '   Discount Percentage: ${discountPercent.toStringAsFixed(2)}%',
+      );
       debugPrint('   Has Discount: $hasDiscount');
     }
 
@@ -58,10 +61,7 @@ class ProductCard extends StatelessWidget {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.grey.withOpacity(0.1), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +75,7 @@ class ProductCard extends StatelessWidget {
                   topRight: Radius.circular(16),
                 ),
                 child: Container(
-                  height: 150,
+                  height: 155,
                   width: double.infinity,
                   color: Colors.grey[100],
                   child: CachedNetworkImage(
@@ -88,51 +88,51 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     errorWidget: (context, url, error) => Center(
-                      child: Icon(
-                        Icons.error_outline_rounded,
-                        color: Colors.grey[400],
-                        size: 40,
-                      ),
+                      child: Image.asset(AssetPaths.Placeholder,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+
+                      )
                     ),
                   ),
                 ),
               ),
 
               // Discount Badge
-              if (hasDiscount && discountPercent > 0)
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+              Positioned(
+                top: 8,
+                left: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFF6B6B), Color(0xFFFFA8A8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFF6B6B), Color(0xFFFFA8A8)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.3),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.red.withOpacity(0.3),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      '${discountPercent.toStringAsFixed(0)}% OFF',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    ],
+                  ),
+                  child: Text(
+                    '${discountPercent.toStringAsFixed(0)}% OFF',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+              ),
 
               // Favorite Icon
               Positioned(

@@ -5,8 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/constants/app_strings.dart';
 import 'core/services/navigation_service.dart';
 import 'core/theme/app_theme.dart';
-import 'feature/order/order_confirmed_screen.dart';
-import 'feature/order/order_confirmed_successful_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
