@@ -316,7 +316,7 @@ class ApiService {
         return ApiResponse.error("No authentication token found");
       }
 
-      final response = await dio.put(
+      final response = await dio.post(
         ApiEndpoints.updateProfile,
         data: {
           'name': name,
