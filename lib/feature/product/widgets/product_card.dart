@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductCard extends StatelessWidget {
   final String image;
@@ -6,6 +7,7 @@ class ProductCard extends StatelessWidget {
   final double price;
   final double regularPrice;
   final double rating;
+  final double discountPercentage;
 
   const ProductCard({
     super.key,
@@ -14,12 +16,35 @@ class ProductCard extends StatelessWidget {
     required this.price,
     required this.regularPrice,
     required this.rating,
+    this.discountPercentage = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    bool hasDiscount = regularPrice > price;
-    double discountPercent = ((regularPrice - price) / regularPrice * 100);
+    bool hasDiscountFromPercentage = discountPercentage > 0;
+    bool hasDiscountFromPrice = regularPrice > price && regularPrice > 0;
+    bool hasDiscount = hasDiscountFromPercentage || hasDiscountFromPrice;
+
+    // for discont
+    double discountPercent = discountPercentage;
+    if (discountPercent == 0 && hasDiscountFromPrice) {
+      discountPercent = ((regularPrice - price) / regularPrice * 100);
+    }
+
+
+    if (discountPercent.isNaN || discountPercent.isInfinite) {
+      discountPercent = 0;
+      hasDiscount = false;
+    }
+
+
+    if (hasDiscount) {
+      debugPrint(' Product: $name');
+      debugPrint('   Regular Price: ৳$regularPrice');
+      debugPrint('   Discounted Price: ৳$price');
+      debugPrint('   Discount Percentage: ${discountPercent.toStringAsFixed(2)}%');
+      debugPrint('   Has Discount: $hasDiscount');
+    }
 
     return Container(
       height: 290,
@@ -44,7 +69,6 @@ class ProductCard extends StatelessWidget {
           // Image and Discount
           Stack(
             children: [
-              // Product Image
               ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
@@ -53,57 +77,51 @@ class ProductCard extends StatelessWidget {
                 child: Container(
                   height: 150,
                   width: double.infinity,
-                  child: Image.network(
-                    image,
+                  color: Colors.grey[100],
+                  child: CachedNetworkImage(
+                    imageUrl: image,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[100],
-                        child: const Icon(
-                          Icons.shopping_bag_outlined,
-                          color: Colors.grey,
-                          size: 40,
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey[100],
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                                : null,
-                            strokeWidth: 2,
-                            color: Colors.purple,
-                          ),
-                        ),
-                      );
-                    },
+                    placeholder: (context, url) => Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: const Color(0xff9775FA),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Center(
+                      child: Icon(
+                        Icons.error_outline_rounded,
+                        color: Colors.grey[400],
+                        size: 40,
+                      ),
+                    ),
                   ),
                 ),
               ),
 
-              // Discount
-              if (hasDiscount)
+              // Discount Badge
+              if (hasDiscount && discountPercent > 0)
                 Positioned(
                   top: 8,
                   left: 8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 3,
+                      horizontal: 8,
+                      vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.red,
                       borderRadius: BorderRadius.circular(6),
                       gradient: const LinearGradient(
                         colors: [Color(0xFFFF6B6B), Color(0xFFFFA8A8)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.3),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Text(
                       '${discountPercent.toStringAsFixed(0)}% OFF',
@@ -152,7 +170,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
+                  // Product Name
                   SizedBox(
                     height: 40,
                     child: Text(
@@ -246,7 +264,7 @@ class ProductCard extends StatelessWidget {
                           children: [
                             // Current Price
                             Text(
-                              "\$${price.toStringAsFixed(2)}",
+                              "৳${price.toStringAsFixed(2)}",
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -254,9 +272,9 @@ class ProductCard extends StatelessWidget {
                               ),
                             ),
                             // Original Price
-                            if (hasDiscount)
+                            if (hasDiscount && regularPrice > price)
                               Text(
-                                "\$${regularPrice.toStringAsFixed(2)}",
+                                "৳${regularPrice.toStringAsFixed(2)}",
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey.shade600,

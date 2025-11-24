@@ -16,13 +16,13 @@ class ApiEndpoints {
   static const updateProfile = "profile";
 
   //Category
-  static const getCategory = "sidebar/category-counts";
+  static const getCategory = "categories";
   static const getSubCategory = "sidebar/sub-category-counts";
   static getFieldSubCategory(int categoryId) => "sidebar/get-field-by-sub-category/$categoryId";
 
 
   //Products
-  static const productList = "products/list";
+  static const productList = "products";
   static productDetails(String productSlug) => "products/$productSlug";
   static relatedProducts(String productId) => "products/related/$productId";
 

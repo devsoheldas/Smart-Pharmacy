@@ -1,258 +1,362 @@
 import 'dart:convert';
 
-Products productsFromJson(String str) => Products.fromJson(json.decode(str));
+Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
-String productsToJson(Products data) => json.encode(data.toJson());
-
-class Products {
-  List<Product>? products;
-  int? total;
-  int? skip;
-  int? limit;
-
-  Products({
-    this.products,
-    this.total,
-    this.skip,
-    this.limit,
-  });
-
-  factory Products.fromJson(Map<String, dynamic> json) => Products(
-    products: json["products"] == null ? [] : List<Product>.from(json["products"]!.map((x) => Product.fromJson(x))),
-    total: json["total"],
-    skip: json["skip"],
-    limit: json["limit"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "products": products == null ? [] : List<dynamic>.from(products!.map((x) => x.toJson())),
-    "total": total,
-    "skip": skip,
-    "limit": limit,
-  };
-}
+String productToJson(Product data) => json.encode(data.toJson());
 
 class Product {
-  int? id;
-  String? title;
-  String? description;
-  Category? category;
-  double? price;
-  double? discountPercentage;
-  double? rating;
-  int? stock;
-  List<String>? tags;
-  String? brand;
-  String? sku;
-  int? weight;
-  Dimensions? dimensions;
-  String? warrantyInformation;
-  String? shippingInformation;
-  AvailabilityStatus? availabilityStatus;
-  List<Review>? reviews;
-  ReturnPolicy? returnPolicy;
-  int? minimumOrderQuantity;
-  Meta? meta;
-  List<String>? images;
-  String? thumbnail;
+  bool? success;
+  dynamic message;
+  List<Datum>? data;
+  int? currentPage;
+  int? lastPage;
+  int? perPage;
+  int? total;
+  String? nextPageUrl;
+  dynamic prevPageUrl;
 
   Product({
-    this.id,
-    this.title,
-    this.description,
-    this.category,
-    this.price,
-    this.discountPercentage,
-    this.rating,
-    this.stock,
-    this.tags,
-    this.brand,
-    this.sku,
-    this.weight,
-    this.dimensions,
-    this.warrantyInformation,
-    this.shippingInformation,
-    this.availabilityStatus,
-    this.reviews,
-    this.returnPolicy,
-    this.minimumOrderQuantity,
-    this.meta,
-    this.images,
-    this.thumbnail,
+    this.success,
+    this.message,
+    this.data,
+    this.currentPage,
+    this.lastPage,
+    this.perPage,
+    this.total,
+    this.nextPageUrl,
+    this.prevPageUrl,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
+    success: json["success"],
+    message: json["message"],
+    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    currentPage: json["current_page"],
+    lastPage: json["last_page"],
+    perPage: json["per_page"],
+    total: json["total"],
+    nextPageUrl: json["next_page_url"],
+    prevPageUrl: json["prev_page_url"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "message": message,
+    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "current_page": currentPage,
+    "last_page": lastPage,
+    "per_page": perPage,
+    "total": total,
+    "next_page_url": nextPageUrl,
+    "prev_page_url": prevPageUrl,
+  };
+}
+
+class Datum {
+  int? id;
+  String? name;
+  String? slug;
+  int? proCatId;
+  dynamic proSubCatId;
+  int? companyId;
+  int? genericId;
+  int? strengthId;
+  int? doseId;
+  double? price;
+  String? description;
+  String? image;
+  dynamic prescriptionRequired;
+  dynamic kycRequired;
+  dynamic maxQuantity;
+  DateTime? createdAt;
+  int? status;
+  int? isBestSelling;
+  String? modifiedImage;
+  int? discountAmount;
+  int? discountPercentage;
+  double? discountedPrice;
+  String? strengthInfo;
+  CompanyInfo? companyInfo;
+  String? genericInfo;
+  String? attrTitle;
+  String? formattedName;
+  String? formattedSubCat;
+  bool? isTba;
+  bool? isOrderable;
+  Company? company;
+  Company? generic;
+  Company? proCat;
+  dynamic proSubCat;
+  List<Discount>? discounts;
+  List<Unit>? units;
+  Company? strength;
+  Company? dosage;
+
+  Datum({
+    this.id,
+    this.name,
+    this.slug,
+    this.proCatId,
+    this.proSubCatId,
+    this.companyId,
+    this.genericId,
+    this.strengthId,
+    this.doseId,
+    this.price,
+    this.description,
+    this.image,
+    this.prescriptionRequired,
+    this.kycRequired,
+    this.maxQuantity,
+    this.createdAt,
+    this.status,
+    this.isBestSelling,
+    this.modifiedImage,
+    this.discountAmount,
+    this.discountPercentage,
+    this.discountedPrice,
+    this.strengthInfo,
+    this.companyInfo,
+    this.genericInfo,
+    this.attrTitle,
+    this.formattedName,
+    this.formattedSubCat,
+    this.isTba,
+    this.isOrderable,
+    this.company,
+    this.generic,
+    this.proCat,
+    this.proSubCat,
+    this.discounts,
+    this.units,
+    this.strength,
+    this.dosage,
+  });
+
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["id"],
-    title: json["title"],
-    description: json["description"],
-    category: categoryValues.map[json["category"]]!,
+    name: json["name"],
+    slug: json["slug"],
+    proCatId: json["pro_cat_id"],
+    proSubCatId: json["pro_sub_cat_id"],
+    companyId: json["company_id"],
+    genericId: json["generic_id"],
+    strengthId: json["strength_id"],
+    doseId: json["dose_id"],
     price: json["price"]?.toDouble(),
-    discountPercentage: json["discountPercentage"]?.toDouble(),
-    rating: json["rating"]?.toDouble(),
-    stock: json["stock"],
-    tags: json["tags"] == null ? [] : List<String>.from(json["tags"]!.map((x) => x)),
-    brand: json["brand"],
-    sku: json["sku"],
-    weight: json["weight"],
-    dimensions: json["dimensions"] == null ? null : Dimensions.fromJson(json["dimensions"]),
-    warrantyInformation: json["warrantyInformation"],
-    shippingInformation: json["shippingInformation"],
-    availabilityStatus: availabilityStatusValues.map[json["availabilityStatus"]]!,
-    reviews: json["reviews"] == null ? [] : List<Review>.from(json["reviews"]!.map((x) => Review.fromJson(x))),
-    returnPolicy: returnPolicyValues.map[json["returnPolicy"]]!,
-    minimumOrderQuantity: json["minimumOrderQuantity"],
-    meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
-    images: json["images"] == null ? [] : List<String>.from(json["images"]!.map((x) => x)),
-    thumbnail: json["thumbnail"],
+    description: json["description"],
+    image: json["image"],
+    prescriptionRequired: json["prescription_required"],
+    kycRequired: json["kyc_required"],
+    maxQuantity: json["max_quantity"],
+    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    status: json["status"],
+    isBestSelling: json["is_best_selling"],
+    modifiedImage: json["modified_image"],
+    discountAmount: json["discount_amount"],
+    discountPercentage: json["discount_percentage"],
+    discountedPrice: json["discounted_price"]?.toDouble(),
+    strengthInfo: json["strength_info"],
+    companyInfo: companyInfoValues.map[json["company_info"]]!,
+    genericInfo: json["generic_info"],
+    attrTitle: json["attr_title"],
+    formattedName: json["formatted_name"],
+    formattedSubCat: json["formatted_sub_cat"],
+    isTba: json["is_tba"],
+    isOrderable: json["is_orderable"],
+    company: json["company"] == null ? null : Company.fromJson(json["company"]),
+    generic: json["generic"] == null ? null : Company.fromJson(json["generic"]),
+    proCat: json["pro_cat"] == null ? null : Company.fromJson(json["pro_cat"]),
+    proSubCat: json["pro_sub_cat"],
+    discounts: json["discounts"] == null ? [] : List<Discount>.from(json["discounts"]!.map((x) => Discount.fromJson(x))),
+    units: json["units"] == null ? [] : List<Unit>.from(json["units"]!.map((x) => Unit.fromJson(x))),
+    strength: json["strength"] == null ? null : Company.fromJson(json["strength"]),
+    dosage: json["dosage"] == null ? null : Company.fromJson(json["dosage"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "title": title,
-    "description": description,
-    "category": categoryValues.reverse[category],
+    "name": name,
+    "slug": slug,
+    "pro_cat_id": proCatId,
+    "pro_sub_cat_id": proSubCatId,
+    "company_id": companyId,
+    "generic_id": genericId,
+    "strength_id": strengthId,
+    "dose_id": doseId,
     "price": price,
-    "discountPercentage": discountPercentage,
-    "rating": rating,
-    "stock": stock,
-    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
-    "brand": brand,
-    "sku": sku,
-    "weight": weight,
-    "dimensions": dimensions?.toJson(),
-    "warrantyInformation": warrantyInformation,
-    "shippingInformation": shippingInformation,
-    "availabilityStatus": availabilityStatusValues.reverse[availabilityStatus],
-    "reviews": reviews == null ? [] : List<dynamic>.from(reviews!.map((x) => x.toJson())),
-    "returnPolicy": returnPolicyValues.reverse[returnPolicy],
-    "minimumOrderQuantity": minimumOrderQuantity,
-    "meta": meta?.toJson(),
-    "images": images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
-    "thumbnail": thumbnail,
+    "description": description,
+    "image": image,
+    "prescription_required": prescriptionRequired,
+    "kyc_required": kycRequired,
+    "max_quantity": maxQuantity,
+    "created_at": createdAt?.toIso8601String(),
+    "status": status,
+    "is_best_selling": isBestSelling,
+    "modified_image": modifiedImage,
+    "discount_amount": discountAmount,
+    "discount_percentage": discountPercentage,
+    "discounted_price": discountedPrice,
+    "strength_info": strengthInfo,
+    "company_info": companyInfoValues.reverse[companyInfo],
+    "generic_info": genericInfo,
+    "attr_title": attrTitle,
+    "formatted_name": formattedName,
+    "formatted_sub_cat": formattedSubCat,
+    "is_tba": isTba,
+    "is_orderable": isOrderable,
+    "company": company?.toJson(),
+    "generic": generic?.toJson(),
+    "pro_cat": proCat?.toJson(),
+    "pro_sub_cat": proSubCat,
+    "discounts": discounts == null ? [] : List<dynamic>.from(discounts!.map((x) => x.toJson())),
+    "units": units == null ? [] : List<dynamic>.from(units!.map((x) => x.toJson())),
+    "strength": strength?.toJson(),
+    "dosage": dosage?.toJson(),
   };
 }
 
-enum AvailabilityStatus {
-  IN_STOCK,
-  LOW_STOCK
-}
+class Company {
+  int? id;
+  String? name;
+  String? slug;
+  int? status;
+  String? formattedName;
 
-final availabilityStatusValues = EnumValues({
-  "In Stock": AvailabilityStatus.IN_STOCK,
-  "Low Stock": AvailabilityStatus.LOW_STOCK
-});
-
-enum Category {
-  BEAUTY,
-  FRAGRANCES,
-  FURNITURE,
-  GROCERIES
-}
-
-final categoryValues = EnumValues({
-  "beauty": Category.BEAUTY,
-  "fragrances": Category.FRAGRANCES,
-  "furniture": Category.FURNITURE,
-  "groceries": Category.GROCERIES
-});
-
-class Dimensions {
-  double? width;
-  double? height;
-  double? depth;
-
-  Dimensions({
-    this.width,
-    this.height,
-    this.depth,
+  Company({
+    this.id,
+    this.name,
+    this.slug,
+    this.status,
+    this.formattedName,
   });
 
-  factory Dimensions.fromJson(Map<String, dynamic> json) => Dimensions(
-    width: json["width"]?.toDouble(),
-    height: json["height"]?.toDouble(),
-    depth: json["depth"]?.toDouble(),
+  factory Company.fromJson(Map<String, dynamic> json) => Company(
+    id: json["id"],
+    name: json["name"],
+    slug: json["slug"],
+    status: json["status"],
+    formattedName: json["formatted_name"],
   );
 
   Map<String, dynamic> toJson() => {
-    "width": width,
-    "height": height,
-    "depth": depth,
+    "id": id,
+    "name": name,
+    "slug": slug,
+    "status": status,
+    "formatted_name": formattedName,
   };
 }
 
-class Meta {
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  String? barcode;
-  String? qrCode;
+enum CompanyInfo {
+  ACTIVE_FINE_CHEMICAL,
+  AD_DIN_PHARMACEUTICA,
+  SOMATEC_PHARMACEUTIC
+}
 
-  Meta({
-    this.createdAt,
-    this.updatedAt,
-    this.barcode,
-    this.qrCode,
+final companyInfoValues = EnumValues({
+  "Active Fine Chemical..": CompanyInfo.ACTIVE_FINE_CHEMICAL,
+  "Ad-din Pharmaceutica..": CompanyInfo.AD_DIN_PHARMACEUTICA,
+  "Somatec Pharmaceutic..": CompanyInfo.SOMATEC_PHARMACEUTIC
+});
+
+class Discount {
+  int? id;
+  int? proId;
+  dynamic unitId;
+  dynamic discountAmount;
+  dynamic discountPercentage;
+  int? status;
+
+  Discount({
+    this.id,
+    this.proId,
+    this.unitId,
+    this.discountAmount,
+    this.discountPercentage,
+    this.status,
   });
 
-  factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    barcode: json["barcode"],
-    qrCode: json["qrCode"],
+  factory Discount.fromJson(Map<String, dynamic> json) => Discount(
+    id: json["id"],
+    proId: json["pro_id"],
+    unitId: json["unit_id"],
+    discountAmount: json["discount_amount"],
+    discountPercentage: json["discount_percentage"],
+    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
-    "barcode": barcode,
-    "qrCode": qrCode,
+    "id": id,
+    "pro_id": proId,
+    "unit_id": unitId,
+    "discount_amount": discountAmount,
+    "discount_percentage": discountPercentage,
+    "status": status,
   };
 }
 
-enum ReturnPolicy {
-  NO_RETURN_POLICY,
-  THE_30_DAYS_RETURN_POLICY,
-  THE_60_DAYS_RETURN_POLICY,
-  THE_7_DAYS_RETURN_POLICY,
-  THE_90_DAYS_RETURN_POLICY
-}
+class Unit {
+  int? id;
+  String? name;
+  String? quantity;
+  String? image;
+  int? status;
+  String? formattedName;
+  Pivot? pivot;
 
-final returnPolicyValues = EnumValues({
-  "No return policy": ReturnPolicy.NO_RETURN_POLICY,
-  "30 days return policy": ReturnPolicy.THE_30_DAYS_RETURN_POLICY,
-  "60 days return policy": ReturnPolicy.THE_60_DAYS_RETURN_POLICY,
-  "7 days return policy": ReturnPolicy.THE_7_DAYS_RETURN_POLICY,
-  "90 days return policy": ReturnPolicy.THE_90_DAYS_RETURN_POLICY
-});
-
-class Review {
-  int? rating;
-  String? comment;
-  DateTime? date;
-  String? reviewerName;
-  String? reviewerEmail;
-
-  Review({
-    this.rating,
-    this.comment,
-    this.date,
-    this.reviewerName,
-    this.reviewerEmail,
+  Unit({
+    this.id,
+    this.name,
+    this.quantity,
+    this.image,
+    this.status,
+    this.formattedName,
+    this.pivot,
   });
 
-  factory Review.fromJson(Map<String, dynamic> json) => Review(
-    rating: json["rating"],
-    comment: json["comment"],
-    date: json["date"] == null ? null : DateTime.parse(json["date"]),
-    reviewerName: json["reviewerName"],
-    reviewerEmail: json["reviewerEmail"],
+  factory Unit.fromJson(Map<String, dynamic> json) => Unit(
+    id: json["id"],
+    name: json["name"],
+    quantity: json["quantity"],
+    image: json["image"],
+    status: json["status"],
+    formattedName: json["formatted_name"],
+    pivot: json["pivot"] == null ? null : Pivot.fromJson(json["pivot"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "rating": rating,
-    "comment": comment,
-    "date": date?.toIso8601String(),
-    "reviewerName": reviewerName,
-    "reviewerEmail": reviewerEmail,
+    "id": id,
+    "name": name,
+    "quantity": quantity,
+    "image": image,
+    "status": status,
+    "formatted_name": formattedName,
+    "pivot": pivot?.toJson(),
+  };
+}
+
+class Pivot {
+  int? medicineId;
+  int? unitId;
+  String? price;
+
+  Pivot({
+    this.medicineId,
+    this.unitId,
+    this.price,
+  });
+
+  factory Pivot.fromJson(Map<String, dynamic> json) => Pivot(
+    medicineId: json["medicine_id"],
+    unitId: json["unit_id"],
+    price: json["price"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "medicine_id": medicineId,
+    "unit_id": unitId,
+    "price": price,
   };
 }
 
