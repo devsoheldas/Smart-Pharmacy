@@ -1,5 +1,4 @@
 class ApiEndpoints {
-
   //Auth
   static const login = "user/authentication/password-login";
   static const logout = "auth/logout";
@@ -9,7 +8,8 @@ class ApiEndpoints {
   static const passwordUpdate = "user/password/update";
   static const fcmTokenUpdate = "user/fcm_token/update";
   static const otpVerify = "otp-verify";
-  static const resendVerificationCode = "user/registration/resend_verification_code";
+  static const resendVerificationCode =
+      "user/registration/resend_verification_code";
 
   //User
   static const userDetails = "user/profile/info";
@@ -18,12 +18,12 @@ class ApiEndpoints {
   //Category
   static const getCategory = "categories";
   static const getSubCategory = "sidebar/sub-category-counts";
-  static getFieldSubCategory(int categoryId) => "sidebar/get-field-by-sub-category/$categoryId";
-
+  static getFieldSubCategory(int categoryId) =>
+      "sidebar/get-field-by-sub-category/$categoryId";
 
   //Products
   static const productList = "products";
-  static productDetails(String productSlug) => "products/$productSlug";
+  static productDetails(String productSlug) => "product?slug=$productSlug";
   static relatedProducts(String productId) => "products/related/$productId";
 
   //Ads
@@ -34,10 +34,6 @@ class ApiEndpoints {
   static const addAddress = "user/address/store";
   static updateAddress(int addressId) => "user/address/update$addressId";
   static deleteAddress(int addressId) => "user/address/delete$addressId";
-  static setDefaultAddress(int addressId) => "user/address/$addressId/set-default";
-
-
-
-
-
+  static setDefaultAddress(int addressId) =>
+      "user/address/$addressId/set-default";
 }

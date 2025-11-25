@@ -19,6 +19,7 @@ class AppRoutes {
   static const String resetPasswordScreen = '/reset_password_screen';
   static const String homeScreen = '/home_screen';
   static const String profileScreen = '/profile_screen';
+  static const String productDetails = '/ViewProductDetails';
   static const String orderHistoryScreen = '/order_history_screen';
   static const String wishlistScreen = '/wishlist_screen';
   static const String addressListScreen = '/address_list_screen';
