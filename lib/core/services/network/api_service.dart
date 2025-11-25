@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:e_pharma/core/configs/api_config.dart';
@@ -376,6 +375,8 @@ class ApiService {
       return ApiResponse.error("Failed to load products: $e");
     }
   }
+  
+
 
   // categories
   Future<Response> get(String endpoint) async {
