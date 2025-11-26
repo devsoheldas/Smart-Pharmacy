@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/services/network/api_service.dart';
 import '../../core/services/navigation_service.dart';
+import '../../core/services/shared_preference_service.dart';
 import '../../routes/app_routes.dart';
 import 'edit_profile_page.dart';
 
@@ -723,7 +724,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             "Logout",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: const Text("Are you sure you want to logout and exit the app?"),
+          content: const Text("Are you sure you want to logout?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
@@ -734,9 +735,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              onPressed: () {
-                Navigator.pop(ctx);
-                _exitApp();
+              onPressed: () async {
+                try {
+                  await SharedPrefService.clearAuthData();
+                  NavigationService.pushNamedAndRemoveUntil(
+                    AppRoutes.loginScreen,
+                  );
+                } catch (e, stackTrace) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            "Logout failed. Please try again."),
+                      ),
+                    );
+                  }
+                }
               },
               child: const Text("Logout"),
             ),
