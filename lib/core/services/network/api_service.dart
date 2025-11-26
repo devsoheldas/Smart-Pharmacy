@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-
-
-=======
->>>>>>> dev
 import 'package:dio/dio.dart';
 import 'package:e_pharma/core/configs/api_config.dart';
 import 'package:e_pharma/core/configs/api_endpoints.dart';
