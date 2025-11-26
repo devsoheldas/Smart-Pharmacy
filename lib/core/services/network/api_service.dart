@@ -425,59 +425,30 @@ class ApiService {
     }
   }
 
+  // ========= update wish list ========
 
-
-
-  //========add to wish list ========
-
-  Future<ApiResponse<WishlistUpdateModel>> addToWishlist(int productId) async {
-
+  Future<ApiResponse<WishlistUpdateModel>> updateWishlist(int productId ) async {
     try {
-      final response = await Dio().post(
-        ApiEndpoints.wishlistapiendpoint,
-        data: {'product_id': productId},
+      final token = await SharedPrefService.getToken();
+
+      final response = await dio.get(
+        ApiEndpoints.updatewishlistapiendpoint( productId),
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
       );
 
       if (response.statusCode == 200) {
-          final wishlistrespone = WishlistUpdateModel.fromJson(response.data);
-          return ApiResponse.success(
-              wishlistrespone,
-            message: wishlistrespone.message ?? "successfully add wishlist",
-          );
-
-      } else {
-        final errorMsg = response.data?["message"] ??
-            "Failed to add wishlist";
-        return ApiResponse.error(errorMsg);
-      }
-    } catch (error) {
-      return ApiResponse.error("Error: ${error.toString()}");
-    }
-  }
-
-  // ========= update wish list ========
-
-  Future<ApiResponse<WishlistUpdateModel>> updataToWishList( int productId) async {
-    try{
-      final respone = await Dio().post(
-        ApiEndpoints.updatewishlistapiendpoint,
-        data: {
-         "product_id" : productId ,
-        }
-      );
-      if(respone.statusCode == 200){
-        final wishlistrespone = WishlistUpdateModel.fromJson(respone.data);
+        final wishlistResponse = WishlistUpdateModel.fromJson(response.data);
         return ApiResponse.success(
-          wishlistrespone,
-          message: wishlistrespone.message ?? "successfully update wishlist",
+          wishlistResponse,
+          message: wishlistResponse.message ?? "Wishlist updated",
         );
-      }else{
-        final errorMsg = respone.data?["message"] ??
-          "Failed to update profile";
-        return ApiResponse.error(errorMsg);
+      } else {
+        return ApiResponse.error(response.data?["message"] ?? "Update failed");
       }
-    }catch (error){
-      return ApiResponse.error("Error: ${error.toString()}");
+    } catch (e) {
+      return ApiResponse.error("Error: $e");
     }
   }
 

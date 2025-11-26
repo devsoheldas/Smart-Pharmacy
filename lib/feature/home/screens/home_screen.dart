@@ -38,45 +38,21 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadProducts();
     _loadCategories();
-    _loadWishlist();
   }
 
-  //=========onWishlistToggle ======
+  void _onWishlistToggle(int productId) async {
 
-  void _onWishlistToggle(Wish wish) async {
-    int newStatus = (wish.status == 1) ? 0 : 1;
-
-    // try {
-    //   Wish updatedWish = await _apiService.updataToWishList(wish.id!, newStatus);
-    //
-    //   setState(() {
-    //     int index = wishlistItems.indexWhere((w) => w.id == wish.id);
-    //     if (index != -1) {
-    //       wishlistItems[index] = updatedWish;
-    //     }
-    //   });
-    // } catch (e) {
-    //   print('Update wishlist error: $e');
-    // }
+    try {
+      final response = await _apiService.updateWishlist(productId );
+      if (response.success) {
+        _loadProducts();
+      } else {
+        print('Wishlist update failed: ${response.message}');
+      }
+    } catch (e) {
+      print('Update wishlist error: $e');
+    }
   }
-
-
-
-  // =========load wishlist=====
-
-  Future<void> _loadWishlist() async {
-    // try {
-    //   final response = await _apiService.getWishlist();
-    //
-    //   setState(() {
-    //     wishlistItems = response.data?.wishes ?? [];
-    //   });
-    //
-    // } catch (e) {
-    //   print("Wishlist load error: $e");
-    // }
-  }
-
 
   // Load products from API
   Future<void> _loadProducts() async {
@@ -560,9 +536,10 @@ class _HomeScreenState extends State<HomeScreen> {
       rating: 4.5,
       isInWishlist: wish != null && wish.status == 1,
       onWishlistToggle: () {
-        if (wish != null) {
-          _onWishlistToggle(wish);
+        if (product.id == null) {
+         return;
         }
+        _onWishlistToggle(product.id);
       },
       productId: product.id ?? 0,
     );

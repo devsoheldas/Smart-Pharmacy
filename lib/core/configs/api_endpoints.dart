@@ -39,7 +39,7 @@ class ApiEndpoints {
 
 // wishlist
   static const wishlistapiendpoint = "user/wishlist/list?filter=all";
-  static const updatewishlistapiendpoint = "user/wishlist/details?product_id=31";
+  static  updatewishlistapiendpoint( int productId) => "user/wishlist/details?product_id= $productId";
 
 
 }

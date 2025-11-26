@@ -44,44 +44,31 @@ class _WishlisstScreenState extends State<WishlistScreen> {
       });
     } catch (e) {
       setState(() {
+        isLoading = false;
         errorMessage = e.toString();
     });
       print("Failed to load wishlist: $e");
     }
   }
 
+  void _onWishlistToggle(Wish wish) async {
+    if(wish.productId == null ) {
+      return ;
+    }
+    try {
+      final response = await _apiService.updateWishlist(wish.productId!, );
+
+      if (response.success) {
+        _loadWishlist();
 
 
-  // void _onAddToWishlist(int productId) async {
-  //   try {
-  //     Wish newWish = await _apiService.addToWishlist(productId);
-  //
-  //     setState(() {
-  //       wishlistItems.add(newWish);
-  //     });
-  //   } catch (e) {
-  //     print('Add wishlist error: $e');
-  //   }
-  // }
-  //
-  // void _onWishlistToggle(Wish wish) async {
-  //   int newStatus = (wish.status == 1) ? 0 : 1;
-  //
-  //   try {
-  //     Wish updatedWish = await _apiService.updataToWishList(wish.id!, newStatus);
-  //
-  //     setState(() {
-  //       int index = wishlistItems.indexWhere((w) => w.id == wish.id);
-  //       if (index != -1) {
-  //         wishlistItems[index] = updatedWish;
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print('Update wishlist error: $e');
-  //   }
-  // }
-
-
+      } else {
+        print('Wishlist update failed: ${response.message}');
+      }
+    } catch (e) {
+      print('Update wishlist error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,8 +135,9 @@ class _WishlisstScreenState extends State<WishlistScreen> {
                   rating: 4.5,
                   isInWishlist: wish.status == 1,
                   onWishlistToggle: () {
-                    // Function add/Remove
+                    _onWishlistToggle(wish);
                   },
+
                 );
               },
             )
