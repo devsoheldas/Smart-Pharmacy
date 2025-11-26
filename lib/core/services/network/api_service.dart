@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:e_pharma/core/configs/api_config.dart';
 import 'package:e_pharma/core/configs/api_endpoints.dart';
@@ -7,6 +6,7 @@ import 'package:e_pharma/core/models/log_in_response_model.dart';
 import 'package:e_pharma/core/models/product_models.dart';
 import 'package:e_pharma/core/models/wishlist_model.dart' hide Product;
 import 'package:e_pharma/core/services/shared_preference_service.dart';
+import 'package:flutter/material.dart';
 import '../../models/profile_models/profile_details_screen_model.dart';
 import '../../models/sing_up_response_model.dart';
 import '../../models/wishlist_update_model.dart';
@@ -397,10 +397,11 @@ class ApiService {
 
     if (token == null || token.isEmpty) {
       return ApiResponse.error("No authentication token found");
+      debugPrint("No authentication token found");
     }
 
     try {
-      final response = await Dio().get(
+      final response = await dio.get(
           ApiEndpoints.wishlistapiendpoint,
         options: Options(
           headers: {
@@ -413,11 +414,10 @@ class ApiService {
         final wishlistrespone = WishlistModel.fromJson(response.data);
         return ApiResponse.success(
           wishlistrespone,
-          message: wishlistrespone.message ?? "successfully add wishlist",
+          message: wishlistrespone.message ?? "Wishlist products retrieved successfully",
         );
       } else {
-        final errorMsg = response.data?["message"] ??
-            "Failed to add wishlist";
+        final errorMsg = response.data?["message"] ?? "Failed to retrieve wishlist";
         return ApiResponse.error(errorMsg);
       }
     } catch (error) {

@@ -12,6 +12,11 @@ class WishlistScreen extends StatefulWidget {
 
 class _WishlisstScreenState extends State<WishlistScreen> {
 
+  final ApiService _apiService = ApiService();
+  List<Wish> wishlistItems  = [];
+  bool isLoading = true;
+  String? errorMessage;
+
   @override
   void initState() {
     super.initState();
@@ -21,23 +26,31 @@ class _WishlisstScreenState extends State<WishlistScreen> {
   void _loadWishlist() async {
 
     try {
+
+      setState(() {
+         isLoading = true;
+         errorMessage = null;
+       });
+
       final response = await _apiService.getWishlist();
       setState(() {
         if (response.success) {
+            isLoading = false;
           wishlistItems = response.data?.data?.wishes ?? [];
         } else {
-         // errorMessage = response.message;
+         errorMessage = response.message;
+          debugPrint("Error:${response.message}");
         }
       });
     } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+    });
       print("Failed to load wishlist: $e");
     }
   }
 
 
-  final ApiService _apiService = ApiService();
-
-  List<Wish> wishlistItems  = [];
 
   // void _onAddToWishlist(int productId) async {
   //   try {
@@ -79,7 +92,27 @@ class _WishlisstScreenState extends State<WishlistScreen> {
       ),
           body: Padding(
             padding: const EdgeInsets.all(16),
-            child: wishlistItems.isEmpty
+            child:  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : errorMessage != null
+                      ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          errorMessage!,
+                          style: Theme.of(context).textTheme.titleLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadWishlist,
+                          child: const Text("Retry"),
+                        ),
+                      ],
+                    ),
+                  )
+                      :  wishlistItems.isEmpty
                 ? const Center(
               child: Text(
                 "No items in wishlist",
