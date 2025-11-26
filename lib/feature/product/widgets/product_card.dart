@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart' as app_asset_paths;
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -10,7 +10,10 @@ class ProductCard extends StatelessWidget {
   final double price;
   final double regularPrice;
   final double rating;
+  final bool isInWishlist;
+  final VoidCallback onWishlistToggle;
   final double discountPercentage;
+  final int productId;
 
   const ProductCard({
     super.key,
@@ -20,6 +23,8 @@ class ProductCard extends StatelessWidget {
     required this.regularPrice,
     required this.rating,
     this.discountPercentage = 0,
+    required this.isInWishlist,
+    required this.onWishlistToggle, required this.productId,
   });
 
   @override
@@ -152,10 +157,12 @@ class ProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.favorite_border_rounded,
-                    color: Colors.grey,
-                    size: 16,
+                  child:  IconButton(
+                    icon: Icon(
+                      isInWishlist ? Icons.favorite : Icons.favorite_border,
+                      color: isInWishlist ? Colors.red : Colors.grey,
+                    ),
+               onPressed: () => onWishlistToggle(), // call the callback
                   ),
                 ),
               ),

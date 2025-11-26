@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_pharma/core/models/wishlist_model.dart' hide Product;
 import 'package:flutter/material.dart';
 import '../../../core/configs/api_endpoints.dart';
 import '../../../core/models/categories_model.dart';
@@ -30,11 +31,28 @@ class _HomeScreenState extends State<HomeScreen> {
   String _errorMessage = '';
   String _categoryErrorMessage = '';
 
+  List<Wish> wishlistItems = [];
+
+
   @override
   void initState() {
     super.initState();
     _loadProducts();
     _loadCategories();
+  }
+
+  void _onWishlistToggle(int productId) async {
+
+    try {
+      final response = await _apiService.updateWishlist(productId );
+      if (response.success) {
+        _loadProducts();
+      } else {
+        print('Wishlist update failed: ${response.message}');
+      }
+    } catch (e) {
+      print('Update wishlist error: $e');
+    }
   }
 
   // Load products from API
@@ -489,37 +507,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget _buildProductCard(dynamic product) {
 
+    Wish? wish;
+    try {
+      wish = wishlistItems.firstWhere((w) => w.productId == product.id);
+    } catch (e) {
+      wish = null;
+    }
+
     double regularPrice = product.price ?? 0;
-    double discountPercentage = product.discountPercentage?.toDouble() ?? 0;
     double discountedPrice = product.discountedPrice ?? regularPrice;
 
-    // Get product image
+    // Image
     String imageUrl = product.modifiedImage ?? product.image ?? '';
     if (imageUrl.isEmpty && product.units != null && product.units!.isNotEmpty) {
       imageUrl = product.units!.first.image ?? '';
     }
     if (imageUrl.isEmpty) {
-      imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVYS7KEXYFAwqdRCW81e4DSR_nSLYSFStx1Q&s';
+      imageUrl =
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVYS7KEXYFAwqdRCW81e4DSR_nSLYSFStx1Q&s';
     }
 
-    return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to product details
-        // NavigationService.pushNamed(AppRoutes.productDetails, arguments: product);
+    return ProductCard(
+      image: imageUrl,
+      name: product.name ?? 'No Name',
+      price: discountedPrice,
+      regularPrice: regularPrice,
+      rating: 4.5,
+      isInWishlist: wish != null && wish.status == 1,
+      onWishlistToggle: () {
+        if (product.id == null) {
+         return;
+        }
+        _onWishlistToggle(product.id);
       },
-      child: ProductCard(
-        image: imageUrl,
-        name: product.name ?? 'No Name',
-        price: discountedPrice,
-        regularPrice: regularPrice,
-        rating: 4.5,
-        discountPercentage: discountPercentage,
-      ),
+      productId: product.id ?? 0,
     );
   }
+
+
+
 
   // Reusable loading widget
   Widget _buildLoadingIndicator({double height = 120}) {
@@ -594,4 +622,5 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 }

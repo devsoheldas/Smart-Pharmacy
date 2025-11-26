@@ -42,4 +42,9 @@ class ApiEndpoints {
   static String orderDetails(String orderId) => 'user/order/details?order_id=$orderId';
   static String orderCancel(String orderId) => 'user/order/cancel?order_id=$orderId';
   static const String createOrder = 'user/order/initiat';
+
+// wishlist
+  static const wishlistapiendpoint = "user/wishlist/list?filter=all";
+  static  updatewishlistapiendpoint( int productId) => "user/wishlist/details?product_id= $productId";
+
 }

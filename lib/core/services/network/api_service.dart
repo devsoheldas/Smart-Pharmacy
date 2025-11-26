@@ -5,9 +5,12 @@ import 'package:e_pharma/core/models/address_response_model.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
 import 'package:e_pharma/core/models/order_response_model.dart';
 import 'package:e_pharma/core/models/product_models.dart';
+import 'package:e_pharma/core/models/wishlist_model.dart' hide Product;
 import 'package:e_pharma/core/services/shared_preference_service.dart';
+import 'package:flutter/material.dart';
 import '../../models/profile_models/profile_details_screen_model.dart';
 import '../../models/sing_up_response_model.dart';
+import '../../models/wishlist_update_model.dart';
 import 'api_response.dart';
 
 class ApiService {
@@ -428,7 +431,8 @@ class ApiService {
       throw Exception(e.message);
     }
   }
-  // Fetching all products
+
+  // Fetching all orders
   Future<ApiResponse<List<OrderData>>> getOrderList({List<int>? status}) async {
     try {
       final token = await SharedPrefService.getToken();
@@ -541,7 +545,70 @@ class ApiService {
       return ApiResponse.error("Error: ${e.toString()}");
     }
   }
+
+  //======= get all wish list ============
+  Future<ApiResponse<WishlistModel>> getWishlist() async {
+    final token = await SharedPrefService.getToken();
+
+    if (token == null || token.isEmpty) {
+      return ApiResponse.error("No authentication token found");
+      debugPrint("No authentication token found");
+    }
+
+    try {
+      final response = await dio.get(
+        ApiEndpoints.wishlistapiendpoint,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final wishlistrespone = WishlistModel.fromJson(response.data);
+        return ApiResponse.success(
+          wishlistrespone,
+          message: wishlistrespone.message ?? "Wishlist products retrieved successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to retrieve wishlist";
+        return ApiResponse.error(errorMsg);
+      }
+    } catch (error) {
+      return ApiResponse.error("Error: ${error.toString()}");
+    }
+  }
+
+  // ========= update wish list ========
+  Future<ApiResponse<WishlistUpdateModel>> updateWishlist(int productId ) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      final response = await dio.get(
+        ApiEndpoints.updatewishlistapiendpoint( productId),
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final wishlistResponse = WishlistUpdateModel.fromJson(response.data);
+        return ApiResponse.success(
+          wishlistResponse,
+          message: wishlistResponse.message ?? "Wishlist updated",
+        );
+      } else {
+        return ApiResponse.error(response.data?["message"] ?? "Update failed");
+      }
+    } catch (e) {
+      return ApiResponse.error("Error: $e");
+    }
+  }
+
 }
+
+
 
 
 
