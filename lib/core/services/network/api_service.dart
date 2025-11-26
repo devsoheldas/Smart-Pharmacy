@@ -5,9 +5,11 @@ import 'package:e_pharma/core/configs/api_endpoints.dart';
 import 'package:e_pharma/core/models/address_response_model.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
 import 'package:e_pharma/core/models/product_models.dart';
+import 'package:e_pharma/core/models/wishlist_model.dart' hide Product;
 import 'package:e_pharma/core/services/shared_preference_service.dart';
 import '../../models/profile_models/profile_details_screen_model.dart';
 import '../../models/sing_up_response_model.dart';
+import '../../models/wishlist_update_model.dart';
 import 'api_response.dart';
 
 class ApiService {
@@ -386,6 +388,99 @@ class ApiService {
       throw Exception(e.message);
     }
   }
+
+  //======= get all wish list ============
+
+
+  Future<ApiResponse<WishlistModel>> getWishlist() async {
+    final token = await SharedPrefService.getToken();
+
+    if (token == null || token.isEmpty) {
+      return ApiResponse.error("No authentication token found");
+    }
+
+    try {
+      final response = await Dio().get(
+          ApiEndpoints.wishlistapiendpoint,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final wishlistrespone = WishlistModel.fromJson(response.data);
+        return ApiResponse.success(
+          wishlistrespone,
+          message: wishlistrespone.message ?? "successfully add wishlist",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ??
+            "Failed to add wishlist";
+        return ApiResponse.error(errorMsg);
+      }
+    } catch (error) {
+      return ApiResponse.error("Error: ${error.toString()}");
+    }
+  }
+
+
+
+
+  //========add to wish list ========
+
+  Future<ApiResponse<WishlistUpdateModel>> addToWishlist(int productId) async {
+
+    try {
+      final response = await Dio().post(
+        ApiEndpoints.wishlistapiendpoint,
+        data: {'product_id': productId},
+      );
+
+      if (response.statusCode == 200) {
+          final wishlistrespone = WishlistUpdateModel.fromJson(response.data);
+          return ApiResponse.success(
+              wishlistrespone,
+            message: wishlistrespone.message ?? "successfully add wishlist",
+          );
+
+      } else {
+        final errorMsg = response.data?["message"] ??
+            "Failed to add wishlist";
+        return ApiResponse.error(errorMsg);
+      }
+    } catch (error) {
+      return ApiResponse.error("Error: ${error.toString()}");
+    }
+  }
+
+  // ========= update wish list ========
+
+  Future<ApiResponse<WishlistUpdateModel>> updataToWishList( int productId) async {
+    try{
+      final respone = await Dio().post(
+        ApiEndpoints.updatewishlistapiendpoint,
+        data: {
+         "product_id" : productId ,
+        }
+      );
+      if(respone.statusCode == 200){
+        final wishlistrespone = WishlistUpdateModel.fromJson(respone.data);
+        return ApiResponse.success(
+          wishlistrespone,
+          message: wishlistrespone.message ?? "successfully update wishlist",
+        );
+      }else{
+        final errorMsg = respone.data?["message"] ??
+          "Failed to update profile";
+        return ApiResponse.error(errorMsg);
+      }
+    }catch (error){
+      return ApiResponse.error("Error: ${error.toString()}");
+    }
+  }
+
 }
 
 

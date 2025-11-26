@@ -37,7 +37,9 @@ class ApiEndpoints {
   static setDefaultAddress(int addressId) => "user/address/$addressId/set-default";
 
 
-
+// wishlist
+  static const wishlistapiendpoint = "user/wishlist/list?filter=all";
+  static const updatewishlistapiendpoint = "user/wishlist/details?product_id=31";
 
 
 }

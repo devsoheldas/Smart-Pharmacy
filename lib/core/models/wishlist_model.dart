@@ -2,22 +2,22 @@
 
 import 'dart:convert';
 
-Wishlist wishlistFromJson(String str) => Wishlist.fromJson(json.decode(str));
+WishlistModel wishlistFromJson(String str) => WishlistModel.fromJson(json.decode(str));
 
-String wishlistToJson(Wishlist data) => json.encode(data.toJson());
+String wishlistToJson(WishlistModel data) => json.encode(data.toJson());
 
-class Wishlist {
+class WishlistModel {
   bool? success;
   String? message;
   Data? data;
 
-  Wishlist({
+  WishlistModel({
     this.success,
     this.message,
     this.data,
   });
 
-  factory Wishlist.fromJson(Map<String, dynamic> json) => Wishlist(
+  factory WishlistModel.fromJson(Map<String, dynamic> json) => WishlistModel(
     success: json["success"],
     message: json["message"],
     data: json["data"] == null ? null : Data.fromJson(json["data"]),
