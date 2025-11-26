@@ -6,6 +6,7 @@ import '../../../core/models/product_models.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../../core/services/network/api_service.dart';
 import '../../../routes/app_routes.dart';
+import '../../profile/profile_details_screen.dart';
 import '../widgets/drawer_section_header.dart';
 import '../widgets/info_card.dart';
 import '../../product/widgets/product_card.dart';

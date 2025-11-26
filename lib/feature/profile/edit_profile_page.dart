@@ -367,6 +367,17 @@ class _EditProfilePageState extends State<EditProfilePage>
             fontWeight: FontWeight.w500,
           ),
         ),
+        // const SizedBox(height: 12),
+        // Text(
+        //   'Tap to change photo',
+        //   style: TextStyle(
+        //     color: Colors.black,
+        //     fontSize: 15, // Small helper text
+        //     fontWeight: FontWeight.w500,
+        //     //decoration: TextDecoration.lineThrough,
+        //   ),
+        // ),
+
       ],
     );
   }

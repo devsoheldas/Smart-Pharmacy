@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:e_pharma/core/constants/app_colors.dart';
 import 'package:e_pharma/core/models/profile_models/profile_details_screen_model.dart';
-import 'package:e_pharma/core/services/network/api_response.dart';
 import 'package:e_pharma/feature/order/order_history_screen.dart';
+import 'package:e_pharma/feature/profile/profile_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/services/network/api_service.dart';
 import '../../core/services/navigation_service.dart';
 import '../../routes/app_routes.dart';
+import '../auth/screens/reset_password_screen.dart';
 import 'edit_profile_page.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -384,7 +385,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         gradient: const LinearGradient(
                           colors: [Color(0xFF10B981), Color(0xFF059669)],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>  ProfileDetailsScreen()));
+                        },
                       ),
                       _buildMenuOption(
                         icon: Icons.password_outlined,
@@ -394,7 +397,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         gradient: const LinearGradient(
                           colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>  ResetPasswordScreen(email: '',)));
+                        },
                       ),
 
                       _buildMenuOption(

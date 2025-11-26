@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:e_pharma/core/configs/api_config.dart';
@@ -265,7 +264,7 @@ class ApiService {
     }
   }
 
-  // Fetch Profile Details
+  //  Profile Details
   Future<ApiResponse<ProfileDetailsScreenModel>> getProfileDetails() async {
     try {
       final token = await SharedPrefService.getToken();
@@ -351,6 +350,50 @@ class ApiService {
       return ApiResponse.error("Error: ${e.toString()}");
     }
   }
+
+  // // Change Password
+  // Future<ApiResponse<bool>> changePassword({
+  //   required String currentPassword,
+  //   required String newPassword,
+  //   required String confirmPassword,
+  // }) async {
+  //   try {
+  //     final token = await SharedPrefService.getToken();
+  //
+  //     if (token == null || token.isEmpty) {
+  //       return ApiResponse.error("No authentication token found");
+  //     }
+  //
+  //     final response = await dio.post(
+  //       ApiEndpoints.changePassword, // Add this endpoint in your ApiEndpoints class
+  //       data: {
+  //         'current_password': currentPassword,
+  //         'new_password': newPassword,
+  //         'new_password_confirmation': confirmPassword,
+  //       },
+  //       options: Options(
+  //         headers: {
+  //           'Authorization': 'Bearer $token',
+  //         },
+  //       ),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       return ApiResponse.success(
+  //         true,
+  //         message: response.data?["message"] ?? "Password changed successfully",
+  //       );
+  //     } else {
+  //       final errorMsg = response.data?["message"] ?? "Failed to change password";
+  //       return ApiResponse.error(errorMsg);
+  //     }
+  //   } on DioException catch (e) {
+  //     final errorMsg = e.response?.data?["message"] ?? "Network error";
+  //     return ApiResponse.error(errorMsg);
+  //   } catch (e) {
+  //     return ApiResponse.error("Error: ${e.toString()}");
+  //   }
+  // }
 
   // Get Products
   Future<ApiResponse<Product>> getProducts() async {

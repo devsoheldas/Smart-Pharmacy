@@ -14,6 +14,7 @@ class ApiEndpoints {
   //User
   static const userDetails = "user/profile/info";
   static const updateProfile = "user/profile/update";
+  static const changePassword = "user/authentication/forgot-password/update";
 
   //Category
   static const getCategory = "categories";
