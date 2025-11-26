@@ -420,7 +420,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       case 7:
         return Icons.access_time;
       case -1:
-      case -2:
         return Icons.cancel;
       default:
         return Icons.info;

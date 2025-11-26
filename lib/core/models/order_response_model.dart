@@ -303,12 +303,12 @@ class OrderProduct {
   int? genericId;
   int? strengthId;
   int? doseId;
-  double? price;
+  num? price;
   String? image;
   String? modifiedImage;
-  double? discountAmount;
-  double? discountPercentage;
-  double? discountedPrice;
+  num? discountAmount;
+  num? discountPercentage;
+  num? discountedPrice;
   String? strengthInfo;
   String? companyInfo;
   String? genericInfo;
@@ -372,12 +372,12 @@ class OrderProduct {
     genericId: json["generic_id"],
     strengthId: json["strength_id"],
     doseId: json["dose_id"],
-    price: json["price"],
+    price: json["price"] is num ? json["price"] : null,
     image: json["image"],
     modifiedImage: json["modified_image"],
-    discountAmount: json["discount_amount"],
-    discountPercentage: json["discount_percentage"],
-    discountedPrice: json["discounted_price"],
+    discountAmount: json["discount_amount"] is num ? json["discount_amount"] : null,
+    discountPercentage: json["discount_percentage"] is num ? json["discount_percentage"] : null,
+    discountedPrice: json["discounted_price"] is num ? json["discounted_price"] : null,
     strengthInfo: json["strength_info"],
     companyInfo: json["company_info"],
     genericInfo: json["generic_info"],
