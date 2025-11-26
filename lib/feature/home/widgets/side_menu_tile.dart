@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_dimensions.dart';
 import '../../../core/services/navigation_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../order/order_history_screen.dart';
@@ -119,6 +121,52 @@ class _SideMenuTileState extends State<SideMenuTile> {
           isLogout: true,
           onTap: () {
             print('Logout tapped');
+
+            showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) {
+                  return AlertDialog(
+                    surfaceTintColor: AppColors.primaryColor,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    title: Text("Are you sure you want to logout?", style:Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.blackLight,fontWeight: FontWeight.w500)),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "No",
+                          style:Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.blackLight,fontWeight: FontWeight.w500)
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          try {
+                            await SharedPrefService.clearAuthData();
+                            NavigationService.pushNamedAndRemoveUntil(
+                              AppRoutes.loginScreen,
+                            );
+                          } catch (e, stackTrace) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      "Logout failed. Please try again."),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        child: Text(
+                          "Yes",
+                            style:Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.blackLight,fontWeight: FontWeight.w500)
+                        ),
+                      ),
+                    ],
+                  );
+                },
+            );
           },
         ),
       ],
