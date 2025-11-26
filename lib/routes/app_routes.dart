@@ -8,6 +8,7 @@ import '../feature/auth/screens/reset_password_screen.dart';
 import '../feature/auth/screens/singup_screen.dart';
 import '../feature/home/screens/home_screen.dart';
 import '../feature/order/order_history_screen.dart';
+import '../feature/profile/change_password.dart';
 import '../feature/profile/profile_screen.dart';
 import '../feature/wishlist/wishlist_screen.dart';
 
@@ -19,6 +20,7 @@ class AppRoutes {
   static const String resetPasswordScreen = '/reset_password_screen';
   static const String homeScreen = '/home_screen';
   static const String profileScreen = '/profile_screen';
+  static const String changePassword = '/change_password';
   static const String orderHistoryScreen = '/order_history_screen';
   static const String wishlistScreen = '/wishlist_screen';
   static const String addressListScreen = '/address_list_screen';
@@ -40,6 +42,7 @@ class AppRoutes {
       orderHistoryScreen: (context) => OrderHistoryScreen(),
       wishlistScreen: (context) => WishlistScreen(),
       addressListScreen: (context) => AddressListScreen(),
+      changePassword : (context) => ChangePasswordScreen(email: "",),
       // productDetailsScreen: (context) {
       //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
       //   if (args == null) throw ArgumentError('args is required for /ProductDetailsScreen');
