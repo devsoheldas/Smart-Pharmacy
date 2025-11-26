@@ -1,10 +1,11 @@
-import 'dart:ffi';
+
 
 import 'package:dio/dio.dart';
 import 'package:e_pharma/core/configs/api_config.dart';
 import 'package:e_pharma/core/configs/api_endpoints.dart';
 import 'package:e_pharma/core/models/address_response_model.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
+import 'package:e_pharma/core/models/order_response_model.dart';
 import 'package:e_pharma/core/models/product_models.dart';
 import 'package:e_pharma/core/services/shared_preference_service.dart';
 import '../../models/profile_models/profile_details_screen_model.dart';
@@ -383,6 +384,119 @@ class ApiService {
       return await dio.get(endpoint);
     } on DioException catch (e) {
       throw Exception(e.message);
+    }
+  }
+  // Fetching all products
+  Future<ApiResponse<List<OrderData>>> getOrderList({List<int>? status}) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      String queryParams = '';
+      if (status != null && status.isNotEmpty) {
+        queryParams = '?status=[${status.join(',')}]';
+      }
+
+      final response = await dio.get(
+        ApiEndpoints.orderList + queryParams,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final orderResponse = OrderResponseModel.fromJson(response.data);
+
+        return ApiResponse.success(
+          orderResponse.data?.orders ?? [],
+          message: orderResponse.message ?? "Orders fetched successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to fetch orders";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+// Get Order Details
+  Future<ApiResponse<OrderData>> getOrderDetails(String orderId) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.get(
+        ApiEndpoints.orderDetails(orderId),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final orderData = OrderData.fromJson(response.data['data']['order']);
+
+        return ApiResponse.success(
+          orderData,
+          message: response.data['message'] ?? "Order details fetched successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to fetch order details";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+// Cancel Order
+  Future<ApiResponse<bool>> cancelOrder(String orderId, {String? reason}) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.get(
+        ApiEndpoints.orderCancel(orderId),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return ApiResponse.success(
+          true,
+          message: response.data?["message"] ?? "Order cancelled successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to cancel order";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
     }
   }
 }

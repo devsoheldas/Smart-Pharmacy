@@ -1,21 +1,57 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:e_pharma/core/spacings/space.dart';
 import 'package:e_pharma/core/utils/date_converter.dart';
 import 'package:e_pharma/core/widgets/appbar/common_appbar.dart';
-import 'package:e_pharma/feature/order/order_history_screen.dart';
+import 'package:e_pharma/core/models/order_response_model.dart';
+import 'package:e_pharma/core/utils/toast_message.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class OrderDetailsScreen extends StatelessWidget {
-  final OrderItem order;
+class OrderDetailsScreen extends StatefulWidget {
+  final OrderData order;
 
   const OrderDetailsScreen({Key? key, required this.order}) : super(key: key);
+
+  @override
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+  late OrderData _order;
+  bool _isLoading = false;
+  final ApiService _apiService = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    _order = widget.order;
+    _fetchOrderDetails();
+  }
+
+  Future<void> _fetchOrderDetails() async {
+    setState(() => _isLoading = true);
+
+    final response = await _apiService.getOrderDetails(_order.orderId ?? "");
+
+    if (response.success && response.data != null) {
+      setState(() {
+        _order = response.data!;
+        _isLoading = false;
+      });
+    } else {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.greenishWhite,
       appBar: const CommonAppbar(title: "Order Details"),
-      body: Stack(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Stack(
         children: [
           ListView(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 120),
@@ -28,7 +64,9 @@ class OrderDetailsScreen extends StatelessWidget {
               verticalSpacing(16),
               _buildPaymentCard(),
               verticalSpacing(16),
-              _buildProductCard(),
+              _buildProductsCard(),
+              verticalSpacing(16),
+              if (_order.timelines?.isNotEmpty == true)
               verticalSpacing(30),
             ],
           ),
@@ -39,35 +77,48 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   Color _getStatusColor() {
-    switch (order.status) {
-      case OrderStatus.completed:
+    switch (_order.status) {
+      case 8:
         return AppColors.greenColor;
-      case OrderStatus.pending:
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
         return AppColors.amberColor;
-      case OrderStatus.cancelled:
+      case -1:
+      case -2:
         return AppColors.redColor;
+      default:
+        return AppColors.greyLight;
     }
   }
 
   String _getStatusText() {
-    switch (order.status) {
-      case OrderStatus.completed:
-        return "Order Completed";
-      case OrderStatus.pending:
-        return "Order Processing";
-      case OrderStatus.cancelled:
-        return "Order Cancelled";
-    }
+    return _order.statusString ?? "Unknown";
   }
 
   IconData _getStatusIcon() {
-    switch (order.status) {
-      case OrderStatus.completed:
+    switch (_order.status) {
+      case 8:
         return Icons.check_circle;
-      case OrderStatus.pending:
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
         return Icons.access_time_rounded;
-      case OrderStatus.cancelled:
+      case -1:
+      case -2:
         return Icons.cancel_rounded;
+      default:
+        return Icons.info;
     }
   }
 
@@ -101,6 +152,24 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildOrderInfoCard() {
+    final createdTimeline = _order.timelines?.firstWhere(
+          (t) => t.status == 0,
+      orElse: () => Timeline(),
+    );
+
+    final createdDate = createdTimeline?.actualCompletionTime != null
+        ? getNormalDate(createdTimeline!.actualCompletionTime!)
+        : "N/A";
+
+    final deliveredTimeline = _order.timelines?.firstWhere(
+          (t) => t.status == 8,
+      orElse: () => Timeline(),
+    );
+
+    final deliveredDate = deliveredTimeline?.actualCompletionTime != null
+        ? getNormalDate(deliveredTimeline!.actualCompletionTime!)
+        : "Not Delivered Yet";
+
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -111,19 +180,17 @@ class OrderDetailsScreen extends StatelessWidget {
         children: [
           _buildInfoRow(
             "Order ID",
-            order.orderId,
+            _order.orderId ?? "N/A",
             "Order Date",
-            getNormalDate(order.orderDate.toIso8601String()),
+            createdDate,
             isWhiteText: true,
           ),
           verticalSpacing(16),
           _buildInfoRow(
-            "Tracking ID",
-            order.trackingId,
+            "Delivery Type",
+            _order.deliveryType ?? "N/A",
             "Delivered On",
-            order.orderDeliveredDate != null
-                ? getNormalDate(order.orderDeliveredDate!.toIso8601String())
-                : "Not Delivered Yet",
+            deliveredDate,
             isWhiteText: true,
           ),
         ],
@@ -132,6 +199,9 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildReceiverInfoCard() {
+    final address = _order.address;
+    final customer = _order.customer;
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
@@ -168,10 +238,11 @@ class OrderDetailsScreen extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Column(
               children: [
-                _buildInfoItem("Name", order.receiverName, Icons.badge),
-                _buildInfoItem("Address", order.receiverAddress, Icons.location_on),
-                _buildInfoItem("Phone no.", order.receiverPhone, Icons.phone),
-                _buildInfoItem("Email", order.receiverEmail, Icons.email),
+                _buildInfoItem("Name", customer?.name ?? address?.name?.toString() ?? "N/A", Icons.badge),
+                _buildInfoItem("Address", address?.address ?? "N/A", Icons.location_on),
+                _buildInfoItem("Phone no.", customer?.phone ?? address?.phone?.toString() ?? "N/A", Icons.phone),
+                if (address?.city != null)
+                  _buildInfoItem("City", address!.city!, Icons.location_city),
               ],
             ),
           ),
@@ -181,9 +252,12 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildPaymentCard() {
-    final icon = order.paymentMethod.toLowerCase().contains('card')
+    final payment = _order.payments?.isNotEmpty == true ? _order.payments!.first : null;
+    final paymentMethod = payment?.paymentMethod ?? "N/A";
+
+    final icon = paymentMethod.toLowerCase().contains('card') || paymentMethod.toLowerCase().contains('visa')
         ? Icons.credit_card
-        : order.paymentMethod.toLowerCase().contains('cash')
+        : paymentMethod.toLowerCase().contains('cash') || paymentMethod.toLowerCase().contains('cod')
         ? Icons.money
         : Icons.account_balance_wallet;
 
@@ -233,13 +307,29 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
                 horizontalSpacing(16),
                 Expanded(
-                  child: Text(
-                    order.paymentMethod,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.blackLight,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        paymentMethod,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.blackLight,
+                        ),
+                      ),
+                      if (payment?.transactionId != null)
+                        Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Text(
+                            "Trans ID: ${payment!.transactionId}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textGreyColor,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],
@@ -250,7 +340,9 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard() {
+  Widget _buildProductsCard() {
+    final products = _order.products ?? [];
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
@@ -273,7 +365,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 Icon(Icons.shopping_bag_outlined, color: AppColors.whiteColor, size: 20),
                 horizontalSpacing(12),
                 Text(
-                  "Product",
+                  "Products (${products.length})",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -283,64 +375,97 @@ class OrderDetailsScreen extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    order.imageUrl,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
+            itemCount: products.length,
+            separatorBuilder: (_, __) => Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Divider(height: 1, color: AppColors.greyLight),
+            ),
+            itemBuilder: (_, index) {
+              final product = products[index];
+              final imageUrl = product.modifiedImage ?? product.image ?? "https://via.placeholder.com/200";
+              final name = product.formattedName ?? product.name ?? "Product";
+              final quantity = product.pivot?.quantity ?? 0;
+              final unitPrice = product.pivot?.unitPrice ?? "0";
+              final totalPrice = product.pivot?.totalPrice ?? "0";
+              final strengthInfo = product.strengthInfo ?? "";
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      imageUrl,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 80,
+                        height: 80,
+                        color: AppColors.greyLight,
+                        child: Icon(Icons.image, color: AppColors.textGreyColor),
+                      ),
+                    ),
                   ),
-                ),
-                horizontalSpacing(14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        order.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.blackLight,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      verticalSpacing(6),
-                      Text(
-                        order.productDetails,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textGreyColor,
-                        ),
-                      ),
-                      verticalSpacing(10),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          "\$${order.price.toStringAsFixed(2)}",
+                  horizontalSpacing(14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
                           style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.whiteColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.blackLight,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (strengthInfo.isNotEmpty) ...[
+                          verticalSpacing(4),
+                          Text(
+                            strengthInfo,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textGreyColor,
+                            ),
+                          ),
+                        ],
+                        verticalSpacing(6),
+                        Text(
+                          "Qty: $quantity × ৳$unitPrice",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textGreyColor,
                           ),
                         ),
-                      ),
-                    ],
+                        verticalSpacing(10),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            "৳$totalPrice",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.whiteColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -493,7 +618,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
                 verticalSpacing(4),
                 Text(
-                  "\$${order.totalAmount.toStringAsFixed(2)}",
+                  "৳${_order.totalAmount ?? '0'}",
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -503,7 +628,8 @@ class OrderDetailsScreen extends StatelessWidget {
               ],
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+              },
               icon: Icon(Icons.refresh, size: 20),
               label: Text("Reorder"),
               style: ElevatedButton.styleFrom(

@@ -1,8 +1,10 @@
 import 'package:e_pharma/core/constants/app_colors.dart';
+import 'package:e_pharma/core/services/network/api_service.dart';
 import 'package:e_pharma/core/spacings/space.dart';
 import 'package:e_pharma/core/utils/date_converter.dart';
 import 'package:e_pharma/core/utils/toast_message.dart';
 import 'package:e_pharma/core/widgets/appbar/common_appbar.dart';
+import 'package:e_pharma/core/models/order_response_model.dart';
 import 'package:e_pharma/feature/order/order_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,91 +18,38 @@ class OrderHistoryScreen extends StatefulWidget {
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   int _selectedTab = 0;
+  List<OrderData> orders = [];
+  bool _isLoading = false;
+  final ApiService _apiService = ApiService();
 
-  final List<OrderItem> orders = [
-    OrderItem(
-      id: "87SDF",
-      name: "Napa",
-      price: 50.00,
-      qty: 1,
-      status: OrderStatus.completed,
-      date: DateTime.now().subtract(const Duration(days: 30)),
-      orderId: "#ORD-2025-001",
-      orderDate: DateTime.now(),
-      orderDeliveredDate: DateTime.now(),
-      trackingId: "#BC67584",
-      receiverName: "Sohel Das",
-      receiverAddress: "shabar,Canada",
-      receiverPhone: "+8804321432",
-      receiverEmail: "soheldas@gmail.com",
-      paymentMethod: "Bow er jonno nice tai free",
-      totalAmount: 24.99,
-      productDetails: "100 unit",
-      imageUrl: "https://picsum.photos/200",
-    ),
-    OrderItem(
-      id: "T43TS",
-      name: "Napa extra",
-      price: 501.80,
-      qty: 1,
-      status: OrderStatus.pending,
-      date: DateTime.now().subtract(const Duration(days: 15)),
-      orderId: "#ORD-2025-002",
-      orderDate: DateTime.now(),
-      orderDeliveredDate: DateTime.now(),
-      trackingId: "#BC67585",
-      receiverName: "Arafat",
-      receiverAddress: "Arafat er Basay.",
-      receiverPhone: "+880198743873",
-      receiverEmail: "arafat@gmail.com",
-      paymentMethod: "Visa **** **** **** 4567",
-      totalAmount: 501.80,
-      productDetails: "1 unit",
-      imageUrl: "https://picsum.photos/200",
-    ),
-    OrderItem(
-      id: "FD3FAF",
-      name: "Vitamin",
-      price: 125.50,
-      qty: 2,
-      status: OrderStatus.pending,
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      orderId: "#ORD-2025-003",
-      orderDate: DateTime.now(),
-      orderDeliveredDate: null,
-      trackingId: "#BC67586",
-      receiverName: "Sohan & Naim",
-      receiverAddress: "No location ",
-      receiverPhone: "+08843812764",
-      receiverEmail: "nomail@nomail.mail",
-      paymentMethod: "bkash 017******43",
-      totalAmount: 251.00,
-      productDetails: "2 units",
-      imageUrl: "https://picsum.photos/200",
-    ),
-    OrderItem(
-      id: "F432R",
-      name: "Napa 3 bela",
-      price: 320.00,
-      qty: 1,
-      status: OrderStatus.cancelled,
-      date: DateTime.now().subtract(const Duration(days: 7)),
-      orderId: "#ORD-2025-004",
-      orderDate: DateTime.now(),
-      orderDeliveredDate: null,
-      trackingId: "#BC67587",
-      receiverName: "Ami nije",
-      receiverAddress: "jani naa",
-      receiverPhone: "87231894",
-      receiverEmail: "ismail@gmail.hk",
-      paymentMethod: "No payment for free",
-      totalAmount: 320.00,
-      productDetails: "1 unit",
-      imageUrl: "https://picsum.photos/200",
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchOrders();
+  }
 
-  void _cancelOrder(String orderId) {
+  Future<void> _fetchOrders() async {
+    setState(() => _isLoading = true);
+
+    final response = await _apiService.getOrderList();
+
+    if (response.success && response.data != null) {
+      setState(() {
+        orders = response.data!;
+        _isLoading = false;
+      });
+    } else {
+      setState(() => _isLoading = false);
+      toastMessage(
+        response.message,
+        AppColors.redColor,
+        AppColors.whiteColor,
+        ToastGravity.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> _cancelOrder(String orderId) async {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -112,24 +61,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             child: Text("No, Keep"),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                final i = orders.indexWhere((e) => e.id == orderId);
-                if (i != -1) {
-                  orders[i] = orders[i].copyWith(
-                    status: OrderStatus.cancelled,
-                    cancelReason: "Cancelled by user",
-                  );
-                }
-              });
+            onPressed: () async {
               Navigator.pop(context);
-              setState(() => _selectedTab = 2);
-              toastMessage(
-                "Order cancelled successfully",
-                AppColors.greenColor,
-                AppColors.whiteColor,
-                ToastGravity.BOTTOM,
-              );
+
+              final response = await _apiService.cancelOrder(orderId);
+
+              if (response.success) {
+                toastMessage(
+                  response.message,
+                  AppColors.greenColor,
+                  AppColors.whiteColor,
+                  ToastGravity.BOTTOM,
+                );
+                setState(() => _selectedTab = 2);
+                _fetchOrders();
+              } else {
+                toastMessage(
+                  response.message,
+                  AppColors.redColor,
+                  AppColors.whiteColor,
+                  ToastGravity.BOTTOM,
+                );
+              }
             },
             child: Text("Yes, Cancel", style: TextStyle(color: AppColors.redColor)),
           ),
@@ -150,25 +103,27 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             padding: EdgeInsets.all(16),
             child: Row(
               children: [
-                _buildTabButton("Completed", 0, OrderStatus.completed),
+                _buildTabButton("Completed", 0, 8),
                 horizontalSpacing(8),
-                _buildTabButton("Pending", 1, OrderStatus.pending),
+                _buildTabButton("Pending", 1, 1),
                 horizontalSpacing(8),
-                _buildTabButton("Cancelled", 2, OrderStatus.cancelled),
+                _buildTabButton("Cancelled", 2, -1),
               ],
             ),
           ),
           Expanded(
-            child: _buildTabContent(_getStatusForTab(_selectedTab)),
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : _buildTabContent(_getStatusForTab(_selectedTab)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTabButton(String label, int index, OrderStatus status) {
+  Widget _buildTabButton(String label, int index, int statusCode) {
     final isSelected = _selectedTab == index;
-    final color = _getColorForStatus(status);
+    final color = _getColorForStatus(statusCode);
 
     return Expanded(
       child: InkWell(
@@ -199,48 +154,68 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 
-  OrderStatus _getStatusForTab(int tab) {
+  int _getStatusForTab(int tab) {
     switch (tab) {
       case 0:
-        return OrderStatus.completed;
+        return 8;
       case 1:
-        return OrderStatus.pending;
+        return 1;
       case 2:
-        return OrderStatus.cancelled;
+        return -1;
       default:
-        return OrderStatus.completed;
+        return 8;
     }
   }
 
-  Color _getColorForStatus(OrderStatus status) {
+  Color _getColorForStatus(int status) {
     switch (status) {
-      case OrderStatus.completed:
+      case 8:
         return AppColors.greenColor;
-      case OrderStatus.pending:
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
         return AppColors.amberColor;
-      case OrderStatus.cancelled:
+      case -1:
+      case -2:
         return AppColors.redColor;
+      default:
+        return AppColors.greyLight;
     }
   }
 
-  Widget _buildTabContent(OrderStatus status) {
+  Widget _buildTabContent(int status) {
     final filtered = orders.where((o) => o.status == status).toList();
     if (filtered.isEmpty) return _buildEmptyState(status);
 
-    return ListView.builder(
-      padding: EdgeInsets.all(16),
-      itemCount: filtered.length,
-      itemBuilder: (_, i) => Padding(
-        padding: EdgeInsets.only(bottom: 12),
-        child: _buildOrderCard(filtered[i]),
+    return RefreshIndicator(
+      onRefresh: _fetchOrders,
+      child: ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: filtered.length,
+        itemBuilder: (_, i) => Padding(
+          padding: EdgeInsets.only(bottom: 12),
+          child: _buildOrderCard(filtered[i]),
+        ),
       ),
     );
   }
 
-  Widget _buildOrderCard(OrderItem order) {
-    final color = _getColorForStatus(order.status);
-    final statusText = _getStatusText(order.status);
-    final statusIcon = _getStatusIcon(order.status);
+  Widget _buildOrderCard(OrderData order) {
+    final color = _getColorForStatus(order.status ?? 0);
+    final statusText = order.statusString ?? "Unknown";
+    final statusIcon = _getStatusIcon(order.status ?? 0);
+
+    // Get first product for display
+    final firstProduct = order.products?.isNotEmpty == true ? order.products!.first : null;
+    final productImage = firstProduct?.modifiedImage ?? firstProduct?.image ?? "";
+    final productName = firstProduct?.formattedName ?? firstProduct?.name ?? "Product";
+    final quantity = firstProduct?.pivot?.quantity ?? 0;
+    final price = firstProduct?.pivot?.unitPrice ?? "0";
 
     return InkWell(
       onTap: () {
@@ -249,7 +224,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           MaterialPageRoute(
             builder: (context) => OrderDetailsScreen(order: order),
           ),
-        );
+        ).then((_) => _fetchOrders());
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
@@ -260,7 +235,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         ),
         child: Column(
           children: [
-            // Header
             Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -288,7 +262,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     ],
                   ),
                   Text(
-                    "#${order.id}",
+                    order.orderId ?? "",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -299,7 +273,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               ),
             ),
 
-            // Content
             Padding(
               padding: EdgeInsets.all(12),
               child: Column(
@@ -310,10 +283,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          order.imageUrl,
+                          productImage,
                           width: 70,
                           height: 70,
                           fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 70,
+                            height: 70,
+                            color: AppColors.greyLight,
+                            child: Icon(Icons.image, color: AppColors.textGreyColor),
+                          ),
                         ),
                       ),
                       horizontalSpacing(12),
@@ -322,7 +301,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              order.name,
+                              productName,
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -333,20 +312,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             ),
                             verticalSpacing(6),
                             Text(
-                              "Qty: ${order.qty} • \$${order.price.toStringAsFixed(2)}",
+                              "Qty: $quantity • ৳$price",
                               style: TextStyle(
                                 fontSize: 13,
                                 color: AppColors.textGreyColor,
                               ),
                             ),
                             verticalSpacing(6),
-                            Text(
-                              getNormalDate(order.date.toIso8601String()),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textGreyColor,
+                            if (order.timelines?.isNotEmpty == true)
+                              Text(
+                                getNormalDate(order.timelines!.first.createdAt ?? ""),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textGreyColor,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -370,7 +350,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                           ),
                           verticalSpacing(4),
                           Text(
-                            "\$${order.totalAmount.toStringAsFixed(2)}",
+                            "৳${order.totalAmount ?? '0'}",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -391,10 +371,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 
-  Widget _buildActionButton(OrderItem order) {
-    if (order.status == OrderStatus.pending) {
+  Widget _buildActionButton(OrderData order) {
+    if (order.status == 0 || order.status == 1) {
       return ElevatedButton(
-        onPressed: () => _cancelOrder(order.id),
+        onPressed: () => _cancelOrder(order.orderId ?? ""),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.whiteColor,
           foregroundColor: AppColors.redColor,
@@ -403,9 +383,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         ),
         child: Text("Cancel"),
       );
-    } else if (order.status == OrderStatus.completed) {
+    } else if (order.status == 8) {
       return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.greenColor,
           foregroundColor: AppColors.whiteColor,
@@ -415,7 +396,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       );
     } else {
       return Text(
-        "Refunded",
+        order.status == -1 ? "Cancelled" : "Processing",
         style: TextStyle(
           fontSize: 13,
           color: AppColors.textGreyColor,
@@ -425,33 +406,32 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     }
   }
 
-  String _getStatusText(OrderStatus status) {
+  IconData _getStatusIcon(int status) {
     switch (status) {
-      case OrderStatus.completed:
-        return "Delivered";
-      case OrderStatus.pending:
-        return "Pending";
-      case OrderStatus.cancelled:
-        return "Cancelled";
-    }
-  }
-
-  IconData _getStatusIcon(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.completed:
+      case 8:
         return Icons.check_circle;
-      case OrderStatus.pending:
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
         return Icons.access_time;
-      case OrderStatus.cancelled:
+      case -1:
+      case -2:
         return Icons.cancel;
+      default:
+        return Icons.info;
     }
   }
-
-  Widget _buildEmptyState(OrderStatus status) {
+  Widget _buildEmptyState(int status) {
     final color = _getColorForStatus(status);
     final icon = _getStatusIcon(status);
-    final title = "No ${_getStatusText(status)} Orders";
-    final subtitle = "Your ${_getStatusText(status).toLowerCase()} orders will appear here";
+    final statusText = status == 8 ? "Completed" : status == -1 ? "Cancelled" : "Pending";
+    final title = "No $statusText Orders";
+    final subtitle = "Your ${statusText.toLowerCase()} orders will appear here";
 
     return Center(
       child: Column(
@@ -484,71 +464,5 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       ),
     );
   }
-}
 
-enum OrderStatus { completed, pending, cancelled }
-
-class OrderItem {
-  final String id, name;
-  final double price;
-  final int qty;
-  final OrderStatus status;
-  final DateTime date;
-  final String? cancelReason;
-  final String orderId;
-  final DateTime orderDate;
-  final DateTime? orderDeliveredDate;
-  final String trackingId;
-  final String receiverName;
-  final String receiverAddress;
-  final String receiverPhone;
-  final String receiverEmail;
-  final String paymentMethod;
-  final double totalAmount;
-  final String productDetails;
-  final String imageUrl;
-
-  OrderItem({
-    required this.id,
-    required this.name,
-    required this.price,
-    required this.qty,
-    required this.status,
-    required this.date,
-    this.cancelReason,
-    required this.orderId,
-    required this.orderDate,
-    this.orderDeliveredDate,
-    required this.trackingId,
-    required this.receiverName,
-    required this.receiverAddress,
-    required this.receiverPhone,
-    required this.receiverEmail,
-    required this.paymentMethod,
-    required this.totalAmount,
-    required this.productDetails,
-    required this.imageUrl,
-  });
-
-  OrderItem copyWith({OrderStatus? status, String? cancelReason}) => OrderItem(
-    id: id,
-    name: name,
-    price: price,
-    qty: qty,
-    status: status ?? this.status,
-    date: date,
-    cancelReason: cancelReason ?? this.cancelReason,
-    orderId: orderId,
-    orderDate: orderDate,
-    orderDeliveredDate: orderDeliveredDate,
-    trackingId: trackingId,
-    receiverName: receiverName,
-    receiverAddress: receiverAddress,
-    receiverPhone: receiverPhone,
-    receiverEmail: receiverEmail,
-    paymentMethod: paymentMethod,
-    totalAmount: totalAmount,
-    productDetails: productDetails,
-    imageUrl: imageUrl,
-  );
 }

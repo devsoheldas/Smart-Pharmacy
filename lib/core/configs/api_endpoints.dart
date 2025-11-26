@@ -36,8 +36,9 @@ class ApiEndpoints {
   static deleteAddress(int addressId) => "user/address/delete$addressId";
   static setDefaultAddress(int addressId) => "user/address/$addressId/set-default";
 
-
-
-
-
+  // Order endpoints
+  static const String orderList = 'user/order/list';
+  static String orderDetails(String orderId) => 'user/order/details?order_id=$orderId';
+  static String orderCancel(String orderId) => 'user/order/cancel?order_id=$orderId';
+  static const String createOrder = 'user/order/initiat';
 }
