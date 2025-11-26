@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../service/api_service.dart';
+
+import '../../core/services/network/api_service.dart';
 
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key, required email});
+
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key, required email});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen>
+class _ChangePasswordScreenState extends State<ChangePasswordScreen>
     with SingleTickerProviderStateMixin {
   final ApiService _apiService = ApiService();
   final _formKey = GlobalKey<FormState>();
@@ -335,8 +337,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                   ),
                   const SizedBox(height: 24),
 
-                  // Reset Password Button
-                  _buildResetButton(),
+                  // Change Password Button
+                  _buildChangeButton(),
 
                   const SizedBox(height: 20),
 
@@ -548,7 +550,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     );
   }
 
-  Widget _buildResetButton() {
+  Widget _buildChangeButton() {
     return SizedBox(
       width: double.infinity,
       height: 50,
@@ -578,7 +580,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
             Icon(Icons.lock_reset_rounded, size: 18),
             SizedBox(width: 8),
             Text(
-              'Reset Password',
+              'Change Password',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,

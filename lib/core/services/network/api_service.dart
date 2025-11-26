@@ -6,6 +6,9 @@ import 'package:e_pharma/core/models/address_response_model.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
 import 'package:e_pharma/core/models/product_models.dart';
 import 'package:e_pharma/core/services/shared_preference_service.dart';
+import 'package:path/path.dart';
+import 'package:path/path.dart';
+import 'package:path/path.dart';
 import '../../models/profile_models/profile_details_screen_model.dart';
 import '../../models/sing_up_response_model.dart';
 import 'api_response.dart';
@@ -351,49 +354,49 @@ class ApiService {
     }
   }
 
-  // // Change Password
-  // Future<ApiResponse<bool>> changePassword({
-  //   required String currentPassword,
-  //   required String newPassword,
-  //   required String confirmPassword,
-  // }) async {
-  //   try {
-  //     final token = await SharedPrefService.getToken();
-  //
-  //     if (token == null || token.isEmpty) {
-  //       return ApiResponse.error("No authentication token found");
-  //     }
-  //
-  //     final response = await dio.post(
-  //       ApiEndpoints.changePassword, // Add this endpoint in your ApiEndpoints class
-  //       data: {
-  //         'current_password': currentPassword,
-  //         'new_password': newPassword,
-  //         'new_password_confirmation': confirmPassword,
-  //       },
-  //       options: Options(
-  //         headers: {
-  //           'Authorization': 'Bearer $token',
-  //         },
-  //       ),
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       return ApiResponse.success(
-  //         true,
-  //         message: response.data?["message"] ?? "Password changed successfully",
-  //       );
-  //     } else {
-  //       final errorMsg = response.data?["message"] ?? "Failed to change password";
-  //       return ApiResponse.error(errorMsg);
-  //     }
-  //   } on DioException catch (e) {
-  //     final errorMsg = e.response?.data?["message"] ?? "Network error";
-  //     return ApiResponse.error(errorMsg);
-  //   } catch (e) {
-  //     return ApiResponse.error("Error: ${e.toString()}");
-  //   }
-  // }
+  // Change Password
+  Future<ApiResponse<bool>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error("No authentication token found");
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.changePassword, // Add this endpoint in your ApiEndpoints class
+        data: {
+          'old_password': currentPassword,
+          'new_password': newPassword,
+          'new_password_confirmation': confirmPassword,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return ApiResponse.success(
+          true,
+          message: response.data?["message"] ?? "Password changed successfully",
+        );
+      } else {
+        final errorMsg = response.data?["message"] ?? "Failed to change password";
+        return ApiResponse.error(errorMsg);
+      }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data?["message"] ?? "Network error";
+      return ApiResponse.error(errorMsg);
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
 
   // Get Products
   Future<ApiResponse<Product>> getProducts() async {

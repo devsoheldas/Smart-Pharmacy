@@ -256,7 +256,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           'Edit Profile',
           style: TextStyle(
             color: Colors.black87,
-            fontSize: 16, // Adjusted to 16 for a cleaner look
+            fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -286,7 +286,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           key: _formKey,
           child: SingleChildScrollView(
             padding: EdgeInsets.only(
-              left: 20, // Reduced padding slightly for small devices
+              left: 20,
               right: 20,
               top: 20,
               bottom: MediaQuery.of(context).viewInsets.bottom + 20,
@@ -324,11 +324,11 @@ class _EditProfilePageState extends State<EditProfilePage>
                 ],
               ),
               child: CircleAvatar(
-                radius: 50, // Slightly smaller image (was 60)
+                radius: 50,
                 backgroundColor: Colors.grey.shade200,
                 backgroundImage: selectedImage != null
                     ? FileImage(selectedImage!)
-                    :  AssetImage('assets/images/profile_pic.png') as ImageProvider,
+                    :  NetworkImage("") as ImageProvider,
                 child: selectedImage == null
                     ? Icon(Icons.person_rounded, size: 50, color: Colors.grey.shade400)
                     : null,
@@ -340,7 +340,7 @@ class _EditProfilePageState extends State<EditProfilePage>
               child: GestureDetector(
                 onTap: _showImageSourceDialog,
                 child: Container(
-                  padding: const EdgeInsets.all(10), // Smaller touch target area
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     shape: BoxShape.circle,

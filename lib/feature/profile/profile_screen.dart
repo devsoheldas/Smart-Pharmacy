@@ -9,6 +9,7 @@ import '../../core/services/network/api_service.dart';
 import '../../core/services/navigation_service.dart';
 import '../../routes/app_routes.dart';
 import '../auth/screens/reset_password_screen.dart';
+import 'change_password.dart';
 import 'edit_profile_page.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -398,7 +399,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
                         ),
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>  ResetPasswordScreen(email: '',)));
+                          NavigationService.pushNamed(AppRoutes.changePassword);
                         },
                       ),
 
