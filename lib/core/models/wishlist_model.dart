@@ -90,7 +90,7 @@ class Product {
   int? genericId;
   int? strengthId;
   int? doseId;
-  int? price;
+  double? price;
   dynamic description;
   dynamic prescriptionRequired;
   dynamic kycRequired;
@@ -98,9 +98,9 @@ class Product {
   DateTime? createdAt;
   int? isBestSelling;
   String? modifiedImage;
-  int? discountAmount;
-  int? discountPercentage;
-  int? discountedPrice;
+  double? discountAmount;
+  double? discountPercentage;
+  double? discountedPrice;
   String? strengthInfo;
   String? companyInfo;
   String? genericInfo;
@@ -171,7 +171,7 @@ class Product {
     genericId: json["generic_id"],
     strengthId: json["strength_id"],
     doseId: json["dose_id"],
-    price: json["price"],
+    price: (json["price"] as num?)?.toDouble() ?? 0.0,
     description: json["description"],
     prescriptionRequired: json["prescription_required"],
     kycRequired: json["kyc_required"],
@@ -179,9 +179,9 @@ class Product {
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     isBestSelling: json["is_best_selling"],
     modifiedImage: json["modified_image"],
-    discountAmount: json["discount_amount"],
-    discountPercentage: json["discount_percentage"],
-    discountedPrice: json["discounted_price"],
+    discountAmount: (json["discount_amount"] as num?)?.toDouble() ?? 0.0,
+    discountPercentage: (json["discount_percentage"] as num?)?.toDouble() ?? 0.0,
+    discountedPrice: (json["discounted_price"] as num?)?.toDouble() ?? 0.0,
     strengthInfo: json["strength_info"],
     companyInfo: json["company_info"],
     genericInfo: json["generic_info"],

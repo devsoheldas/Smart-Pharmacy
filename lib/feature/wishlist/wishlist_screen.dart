@@ -112,7 +112,7 @@ class _WishlisstScreenState extends State<WishlistScreen> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 15,
                 crossAxisSpacing: 10,
-                childAspectRatio: 0.65,
+                childAspectRatio: 0.60,
               ),
               itemBuilder: (context, index) {
                 final wish = wishlistItems[index];
