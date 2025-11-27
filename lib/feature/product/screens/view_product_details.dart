@@ -102,12 +102,60 @@ class _ViewProductDetailsState extends State<ViewProductDetails> {
     }
   }
 
-  void _addToCart() {
-    // TODO: Implement add to cart
+  void _addToCart() async {
+    if (_product == null || _selectedUnit == null) return;
+
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: Color(0xff9775FA)),
+      ),
+    );
+
+    final response = await _apiService.addToCart(
+      productSlug: widget.productSlug,
+      unitId: _selectedUnit!.id!,
+      quantity: _quantity,
+    );
+
+    if (!mounted) return;
+    Navigator.pop(context); // Remove loading dialog
+
+    if (response.success) {
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xff9775FA),
+          content: Text(response.message),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(response.message),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    }
   }
 
   void _buyNow() {
     // TODO: Implement buy now
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Buy Now functionality coming soon!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   @override

@@ -14,6 +14,7 @@ import 'api_response.dart';
 
 class ApiService {
   late final Dio dio;
+  int? _userCartId;
 
   ApiService() {
     dio = Dio(
@@ -38,9 +39,9 @@ class ApiService {
 
   // Login
   Future<ApiResponse<LogInResponseModel>> logInUser(
-    String phone,
-    String password,
-  ) async {
+      String phone,
+      String password,
+      ) async {
     try {
       final response = await dio.post(
         ApiEndpoints.login,
@@ -71,11 +72,11 @@ class ApiService {
 
   // Signup
   Future<ApiResponse<SingupResponseModel>> singUpUser(
-    String phone,
-    String password,
-    String name,
-    String confirmationPassword,
-  ) async {
+      String phone,
+      String password,
+      String name,
+      String confirmationPassword,
+      ) async {
     try {
       final response = await dio.post(
         ApiEndpoints.register,
@@ -140,8 +141,8 @@ class ApiService {
 
   // Add new address
   Future<ApiResponse<AddressData>> addAddress(
-    Map<String, dynamic> addressData,
-  ) async {
+      Map<String, dynamic> addressData,
+      ) async {
     try {
       final token = await SharedPrefService.getToken();
       if (token == null || token.isEmpty) {
@@ -173,9 +174,9 @@ class ApiService {
 
   // Update address
   Future<ApiResponse<AddressData>> updateAddress(
-    int addressId,
-    Map<String, dynamic> addressData,
-  ) async {
+      int addressId,
+      Map<String, dynamic> addressData,
+      ) async {
     try {
       final token = await SharedPrefService.getToken();
       if (token == null || token.isEmpty) {
@@ -245,7 +246,7 @@ class ApiService {
         return ApiResponse.success(
           true,
           message:
-              response.data?["message"] ??
+          response.data?["message"] ??
               "Default address updated successfully",
         );
       } else {
@@ -379,8 +380,8 @@ class ApiService {
 
   // Get Product Details usimg Slug
   Future<ApiResponse<ProductDetails>> getProductDetailsBySlug(
-    String slug,
-  ) async {
+      String slug,
+      ) async {
     try {
       final response = await dio.get(ApiEndpoints.productDetails(slug));
 
@@ -400,4 +401,155 @@ class ApiService {
       return ApiResponse.error("Failed to load product details: $e");
     }
   }
+
+  // Add to cart
+  Future<ApiResponse<dynamic>> addToCart({
+    required String productSlug,
+    required int unitId,
+    required int quantity,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('Please login to add items to cart');
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.addToCart,
+        data: {
+          'product_slug': productSlug,
+          'unit_id': unitId,
+          'quantity': quantity,
+        },
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return ApiResponse.success(
+          response.data,
+          message: response.data["message"] ?? "Product added to cart",
+        );
+      }
+
+      return ApiResponse.error("Failed to add product to cart");
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error",
+      );
+    }
+  }
+
+// Get Cart Products
+  Future<ApiResponse<List<dynamic>>> getCartProducts() async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('Please login to view cart');
+      }
+
+      final response = await dio.get(
+        ApiEndpoints.getCartProducts,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        return ApiResponse.success(
+          response.data["data"] ?? [],
+          message: response.data["message"] ?? "Cart loaded",
+        );
+      }
+
+      return ApiResponse.error("Failed to load cart");
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error",
+      );
+    }
+  }
+
+
+// Remove  Cart
+  Future<ApiResponse<dynamic>> removeFromCart({
+    required int cartItemId,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('Please login to remove item');
+      }
+
+      final requestData = {
+        "carts": [cartItemId]
+      };
+
+      final response = await dio.post(
+        ApiEndpoints.removeFromCart,
+        data: requestData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return ApiResponse.success(
+          response.data,
+          message: response.data["message"] ?? "Removed from cart",
+        );
+      }
+
+      return ApiResponse.error(
+        response.data["message"] ?? "Failed to remove item",
+      );
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error",
+      );
+    } catch (e) {
+      return ApiResponse.error("Unexpected error occurred");
+    }
+  }
+
+//error
+// Update Cart Item
+  Future<ApiResponse<dynamic>> updateCartItem({
+    required int cartItemId,
+    required int quantity,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('');
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.updateCartItem,
+        data: {
+          '': cartItemId,
+          '': quantity,
+        },
+        options: Options(headers: {'Authorization': '$token'}),
+      );
+
+      if (response.statusCode == 200 &&
+          response.data['success'] == true) {
+        return ApiResponse.success(
+          response.data,
+          message: response.data["message"] ?? "Cart updated",
+        );
+      }
+
+      return ApiResponse.error("Failed to update cart");
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "error",
+      );
+    }
+  }
+
+
+
+
 }
