@@ -144,8 +144,8 @@ class ProductCard extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: Container(
-                  width: 30,
-                  height: 30,
+                  width: 35,
+                  height: 35,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -157,12 +157,14 @@ class ProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child:  IconButton(
-                    icon: Icon(
-                      isInWishlist ? Icons.favorite : Icons.favorite_border,
-                      color: isInWishlist ? Colors.red : Colors.grey,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () => onWishlistToggle(), // call the callback
+                      child: Icon(
+                        isInWishlist ? Icons.favorite : Icons.favorite_border,
+                        color: isInWishlist ? Colors.red : Colors.grey,
+                      ),
                     ),
-               onPressed: () => onWishlistToggle(), // call the callback
                   ),
                 ),
               ),

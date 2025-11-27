@@ -503,6 +503,7 @@ class _ViewProductDetailsState extends State<ViewProductDetails> {
           fit: BoxFit.cover,
           placeholder: (context, url) => const Center(child: CircularProgressIndicator(color: Color(0xff9775FA), strokeWidth: 2)),
           errorWidget: (context, url, error) => Container(
+            width: double.infinity,
             color: Colors.grey.shade200,
             child: const Icon(Icons.broken_image_rounded, size: 48, color: Colors.grey),
           ),
@@ -523,14 +524,17 @@ class _ViewProductDetailsState extends State<ViewProductDetails> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              if (product.company?.name != null) _buildInfoChip(product.company!.name!, const Color(0xff9775FA)),
-              if (product.proCat?.name != null) ...[
-                const SizedBox(width: 8),
-                _buildInfoChip(product.proCat!.name!, Colors.grey.shade600),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                if (product.company?.name != null) _buildInfoChip(product.company!.name!, const Color(0xff9775FA)),
+                if (product.proCat?.name != null) ...[
+                  const SizedBox(width: 8),
+                  _buildInfoChip(product.proCat!.name!, Colors.grey.shade600),
+                ],
               ],
-            ],
+            ),
           ),
           const SizedBox(height: 16),
           Text(product.name ?? 'Untitled Product', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
