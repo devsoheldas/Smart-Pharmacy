@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../routes/app_routes.dart';
+
 class CommonAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isBackVisible;
@@ -53,7 +55,17 @@ class CommonAppbar extends StatelessWidget implements PreferredSizeWidget {
                       width: AppDimensions.IMAGE_SIZE_45.h,
                       height: AppDimensions.IMAGE_SIZE_45.h,
                     ),
-                    onTap: () => Navigator.pop(context),
+                    onTap:() {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          AppRoutes.homeScreen,
+                              (route) => false,
+                        );
+                      }
+                    },
                   ),
                 ),
             ],

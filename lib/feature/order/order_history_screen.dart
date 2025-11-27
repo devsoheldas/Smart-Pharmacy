@@ -6,6 +6,7 @@ import 'package:e_pharma/core/utils/toast_message.dart';
 import 'package:e_pharma/core/widgets/appbar/common_appbar.dart';
 import 'package:e_pharma/core/models/order_response_model.dart';
 import 'package:e_pharma/feature/order/order_details_screen.dart';
+import 'package:e_pharma/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -95,7 +96,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.greenishWhite,
-      appBar: const CommonAppbar(title: "My Orders"),
+      appBar: CommonAppbar(
+        title: "My Orders",
+        isBackVisible: true,
+      ),
       body: Column(
         children: [
           Container(
@@ -209,8 +213,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     final color = _getColorForStatus(order.status ?? 0);
     final statusText = order.statusString ?? "Unknown";
     final statusIcon = _getStatusIcon(order.status ?? 0);
-
-    // Get first product for display
     final firstProduct = order.products?.isNotEmpty == true ? order.products!.first : null;
     final productImage = firstProduct?.modifiedImage ?? firstProduct?.image ?? "";
     final productName = firstProduct?.formattedName ?? firstProduct?.name ?? "Product";

@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:e_pharma/feature/address/select_address_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_asset_paths.dart';
 import '../../../core/models/pruduct_details_model.dart';
 import '../../../core/services/network/api_service.dart';
-import '../../home/widgets/product_card.dart';
 import '../../home/widgets/simillar_product_card.dart';
+
 
 class ViewProductDetails extends StatefulWidget {
   final String productSlug;
@@ -148,14 +149,63 @@ class _ViewProductDetailsState extends State<ViewProductDetails> {
     }
   }
 
-  void _buyNow() {
-    // TODO: Implement buy now
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Buy Now functionality coming soon!'),
-        duration: Duration(seconds: 2),
+  void _buyNow() async {
+    if (_product == null || _selectedUnit == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a pack size'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: Color(0xff9775FA)),
       ),
     );
+
+    // Initiate single order
+    final response = await _apiService.initiateSingleOrder(
+      productSlug: widget.productSlug,
+      unitId: _selectedUnit!.id!,
+      quantity: _quantity,
+    );
+
+    if (!mounted) return;
+    Navigator.pop(context); // Remove loading
+
+    if (response.success && response.data?.data?.orderId != null) {
+      // Navigate to address selection with orderId (String)
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SelectAddressScreen(
+            orderId: response.data!.data!.orderId!, // This is String
+          ),
+        ),
+      );
+    } else {
+      // Show error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+              response.message.isNotEmpty
+                  ? response.message
+                  : 'Failed to create order'
+          ),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    }
   }
 
   @override

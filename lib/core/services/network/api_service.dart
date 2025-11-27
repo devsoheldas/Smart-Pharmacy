@@ -6,6 +6,7 @@ import 'package:e_pharma/core/models/address_response_model.dart';
 import 'package:e_pharma/core/models/log_in_response_model.dart';
 import 'package:e_pharma/core/models/order_response_model.dart';
 import 'package:e_pharma/core/models/product_models.dart';
+import 'package:e_pharma/core/models/single_order_model.dart';
 import 'package:e_pharma/core/models/wishlist_model.dart' hide Product;
 import 'package:e_pharma/core/services/shared_preference_service.dart';
 import 'package:flutter/material.dart';
@@ -769,5 +770,126 @@ class ApiService {
       return ApiResponse.error("Error: $e");
     }
   }
+  // 1. Single Order Initiate (Buy Now) - CORRECTED
+  Future<ApiResponse<SingleOrderModel>> initiateSingleOrder({
+    required String productSlug,
+    required int unitId,
+    required int quantity,
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('Please login to place order');
+      }
 
+      final response = await dio.post(
+        ApiEndpoints.orderInitiateSingle,
+        queryParameters: {
+          'product_slug': productSlug,
+          'unit_id': unitId,
+          'quantity': quantity,
+        },
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final orderResponse = SingleOrderModel.fromJson(response.data);
+        return ApiResponse.success(
+          orderResponse,
+          message: orderResponse.message ?? "Order initiated successfully",
+        );
+      }
+
+      return ApiResponse.error(
+          response.data?["message"] ?? "Failed to initiate order"
+      );
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+// 2. Update Order Address - CORRECTED
+  Future<ApiResponse<bool>> updateOrderAddress({
+    required String orderId,
+    required int addressId,
+    required String deliveryType, // 'standard' or 'express'
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('Please login');
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.orderUpdateAddress,
+        queryParameters: {
+          'order_id': orderId,
+          'address_id': addressId,
+          'delivery_type': deliveryType,
+        },
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ApiResponse.success(
+          true,
+          message: response.data?["message"] ?? "Address updated",
+        );
+      }
+
+      return ApiResponse.error(
+          response.data?["message"] ?? "Failed to update address"
+      );
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
+
+// 3. Confirm Order with Payment - CORRECTED
+  Future<ApiResponse<OrderConfirmResponse>> confirmOrder({
+    required String orderId,
+    required String paymentMethod, // 'cod'
+  }) async {
+    try {
+      final token = await SharedPrefService.getToken();
+      if (token == null || token.isEmpty) {
+        return ApiResponse.error('Please login');
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.orderConfirm,
+        queryParameters: {
+          'order_id': orderId,
+          'payment_method': paymentMethod,
+        },
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final confirmResponse = OrderConfirmResponse.fromJson(response.data);
+        return ApiResponse.success(
+          confirmResponse,
+          message: confirmResponse.message,
+        );
+      }
+
+      return ApiResponse.error(
+          response.data?["message"] ?? "Failed to confirm order"
+      );
+    } on DioException catch (e) {
+      return ApiResponse.error(
+        e.response?.data?["message"] ?? "Network error",
+      );
+    } catch (e) {
+      return ApiResponse.error("Error: ${e.toString()}");
+    }
+  }
 }

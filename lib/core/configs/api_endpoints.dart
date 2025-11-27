@@ -50,4 +50,9 @@ class ApiEndpoints {
   static const getCartProducts = "user/cart/products";
   static const updateCartItem = "user/cart/update";
   static const removeFromCart = "user/cart/delete";
+
+  // Order checkout endpoints
+  static const String orderInitiateSingle = 'user/order/initiat/single';
+  static const String orderUpdateAddress = 'user/order/update-address';
+  static const String orderConfirm = 'user/order/confirm';
 }
