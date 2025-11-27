@@ -1,5 +1,4 @@
 class ApiEndpoints {
-
   //Auth
   static const login = "user/authentication/password-login";
   static const logout = "auth/logout";
@@ -21,10 +20,9 @@ class ApiEndpoints {
   static const getSubCategory = "sidebar/sub-category-counts";
   static getFieldSubCategory(int categoryId) => "sidebar/get-field-by-sub-category/$categoryId";
 
-
   //Products
   static const productList = "products";
-  static productDetails(String productSlug) => "products/$productSlug";
+  static productDetails(String productSlug) => "product?slug=$productSlug";
   static relatedProducts(String productId) => "products/related/$productId";
 
   //Ads
@@ -47,4 +45,9 @@ class ApiEndpoints {
   static const wishlistapiendpoint = "user/wishlist/list?filter=all";
   static  updatewishlistapiendpoint( int productId) => "user/wishlist/details?product_id= $productId";
 
+  // Cart
+  static const addToCart = "user/cart/add";
+  static const getCartProducts = "user/cart/products";
+  static const updateCartItem = "user/cart/update";
+  static const removeFromCart = "user/cart/delete";
 }

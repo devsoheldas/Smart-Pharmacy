@@ -1,7 +1,7 @@
+import 'package:e_pharma/feature/home/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import '../../core/models/wishlist_model.dart';
 import '../../core/services/network/api_service.dart';
-import '../product/widgets/product_card.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
