@@ -425,7 +425,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         gradient: const LinearGradient(
                           colors: [Color(0xFF10B981), Color(0xFF059669)],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          NavigationService.pushNamed(AppRoutes.addressListScreen);
+                        },
                       ),
 
                       _buildMenuOption(
